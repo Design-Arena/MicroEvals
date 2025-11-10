@@ -19,7 +19,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import shutil
 
 from .eval_registry import EvalRegistry
-from .utils import clone_repo, build_prompt, run_eval, run_batch_eval, load_source, read_result, save_results
+from .utils import prepare_repo, build_prompt, run_eval, run_batch_eval, load_source, read_result, save_results, safe_cleanup_temp_dir
 
 
 # ANSI color codes
@@ -57,8 +57,8 @@ def run_single_eval(eval_file: Path, repo_url: str, timeout: int = 300, output_d
             merged_inputs = {**yaml_inputs, **runtime_inputs}
             eval_spec['inputs'] = merged_inputs
         
-        # Clone repository
-        temp_dir = clone_repo(repo_url)
+        # Prepare repository (clone or copy)
+        temp_dir = prepare_repo(repo_url)
         
         try:
             # Build and run evaluation
@@ -93,8 +93,8 @@ def run_single_eval(eval_file: Path, repo_url: str, timeout: int = 300, output_d
             }
             
         finally:
-            # Cleanup temp directory
-            shutil.rmtree(temp_dir, ignore_errors=True)
+            # Cleanup temp directory (with safety checks)
+            safe_cleanup_temp_dir(temp_dir)
             
     except Exception as e:
         return {
@@ -190,53 +190,57 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Run a single eval
-  python -m microevals.eval_runner --repo https://github.com/user/app --eval evals/nextjs/001_server_component_fetch.yaml
+  # Run in current directory
+  microeval --category nextjs
+  
+  # Run in specific local path
+  microeval --repo /path/to/project --category react
+  
+  # Run against remote repository
+  microeval --repo https://github.com/user/app --eval evals/nextjs/001_server_component_fetch.yaml
   
   # Run a single eval with runtime input overrides
-  python -m microevals.eval_runner --repo https://github.com/user/app --eval evals/supabase/001_client_setup.yaml \\
+  microeval --repo https://github.com/user/app --eval evals/supabase/001_client_setup.yaml \\
     --input supabase_url "https://xyz.supabase.co" \\
     --input supabase_anon_key "your_key_here"
   
   # Run all evals in a category
-  python -m microevals.eval_runner --repo https://github.com/user/app --category nextjs
+  microeval --category nextjs
   
   # Run all evals in a category with runtime inputs (applies to all evals)
-  python -m microevals.eval_runner --repo https://github.com/user/app --category supabase \\
-    --input deployment_url "https://myapp.vercel.app"
+  microeval --category supabase --input deployment_url "https://myapp.vercel.app"
   
   # Run all evals
-  python -m microevals.eval_runner --repo https://github.com/user/app --all
+  microeval --all
   
   # Run specific eval IDs
-  python -m microevals.eval_runner --repo https://github.com/user/app --ids nextjs_server_component_fetch_001 supabase_implementation
+  microeval --ids nextjs_server_component_fetch_001 supabase_implementation
   
   # Run with custom timeout and parallel execution
-  python -m microevals.eval_runner --repo https://github.com/user/app --category nextjs --timeout 600 --parallel 3
+  microeval --category nextjs --timeout 600 --parallel 3
   
   # Run with batch mode (multiple evals in one Claude session)
-  python -m microevals.eval_runner --repo https://github.com/user/app --category tailwind --batch-size 3
+  microeval --category tailwind --batch-size 3
   
   # Run all evals in large batches
-  python -m microevals.eval_runner --repo https://github.com/user/app --all --batch-size 15
+  microeval --all --batch-size 15
   
   # Run specific eval files in batch
-  python -m microevals.eval_runner --repo https://github.com/user/app \\
-    --evals evals/tailwind/001_tailwind_v4_config.yaml evals/react/001_missing_useeffect_dependencies.yaml \\
-    --batch-size 2
+  microeval --evals evals/tailwind/001_tailwind_v4_config.yaml evals/react/001_missing_useeffect_dependencies.yaml --batch-size 2
         """
     )
     
-    parser.add_argument('--repo', required=True, help='GitHub repository URL')
+    parser.add_argument('--repo', default='.', help='Repository URL or local path (default: current directory)')
     parser.add_argument('--eval', help='Path to specific evaluation YAML file')
     parser.add_argument('--evals', nargs='+', help='Paths to multiple evaluation YAML files')
     parser.add_argument('--category', help='Run all evals in this category (e.g., nextjs, supabase)')
     parser.add_argument('--ids', nargs='+', help='Run specific eval IDs')
     parser.add_argument('--all', action='store_true', help='Run all evaluations')
+    parser.add_argument('--list', action='store_true', help='List all available evaluations and exit')
     parser.add_argument('--timeout', type=int, default=300, help='Evaluation timeout in seconds')
     parser.add_argument('--output-dir', default='results', help='Output directory for results')
     parser.add_argument('--parallel', type=int, default=1, help='Number of parallel evaluations')
-    parser.add_argument('--evals-dir', default='evals', help='Base directory containing evals')
+    parser.add_argument('--evals-dir', default=None, help='Base directory containing evals (default: auto-detect from package installation)')
     parser.add_argument('--input', '-i', action='append', nargs=2, metavar=('KEY', 'VALUE'),
                         help='Runtime input override (can be used multiple times): --input key value')
     parser.add_argument('--batch-size', type=int, default=1,
@@ -246,15 +250,61 @@ Examples:
     
     args = parser.parse_args()
     
+    # Initialize registry
+    registry = EvalRegistry(args.evals_dir)
+    
+    # Handle --list option
+    if args.list:
+        print(f"\n{Colors.BOLD}{'='*80}{Colors.RESET}")
+        print(f"{Colors.BOLD}AVAILABLE EVALUATIONS{Colors.RESET}")
+        print(f"{Colors.BOLD}{'='*80}{Colors.RESET}\n")
+        
+        if args.category:
+            # List specific category
+            evals = registry.get_by_category(args.category)
+            if not evals:
+                print(f"{Colors.RED}No evals found in category '{args.category}'{Colors.RESET}")
+                sys.exit(1)
+            
+            print(f"{Colors.CYAN}{args.category.upper()}{Colors.RESET} ({len(evals)} evals)\n")
+            for eval_info in evals:
+                print(f"  {Colors.GREEN}•{Colors.RESET} {eval_info['eval_id']}")
+                print(f"    {eval_info['name']}")
+                if eval_info.get('description'):
+                    print(f"    {Colors.BLUE}{eval_info['description']}{Colors.RESET}")
+                print()
+        else:
+            # List all categories
+            all_evals = registry.get_all()
+            print(f"Total evaluations: {Colors.BOLD}{len(all_evals)}{Colors.RESET}\n")
+            
+            # Group by category
+            categories = {}
+            for eval_info in all_evals:
+                cat = eval_info['category']
+                if cat not in categories:
+                    categories[cat] = []
+                categories[cat].append(eval_info)
+            
+            for category, evals in sorted(categories.items()):
+                print(f"{Colors.CYAN}{category.upper()}{Colors.RESET} ({len(evals)} evals)")
+                for eval_info in evals[:3]:  # Show first 3
+                    print(f"  {Colors.GREEN}•{Colors.RESET} {eval_info['eval_id']}: {eval_info['name']}")
+                if len(evals) > 3:
+                    print(f"  {Colors.YELLOW}  ... and {len(evals) - 3} more{Colors.RESET}")
+                print()
+            
+            print(f"\n{Colors.CYAN}Tip:{Colors.RESET} Use --list --category <name> to see all evals in a category")
+        
+        print(f"{Colors.BOLD}{'='*80}{Colors.RESET}\n")
+        sys.exit(0)
+    
     # Parse runtime inputs from --input arguments
     runtime_inputs = {}
     if args.input:
         for key, value in args.input:
             runtime_inputs[key] = value
         print(f"Runtime inputs: {runtime_inputs}\n")
-    
-    # Initialize registry
-    registry = EvalRegistry(args.evals_dir)
     
     # Determine which evals to run
     eval_files = []
@@ -342,9 +392,9 @@ Examples:
             eval_specs.append(spec)
             eval_names.append(eval_name)
         
-        # Clone repo once
-        print(f"{Colors.CYAN}Cloning repository...{Colors.RESET}")
-        temp_dir = clone_repo(args.repo)
+        # Prepare repo once (clone or copy)
+        print(f"{Colors.CYAN}Preparing repository...{Colors.RESET}")
+        temp_dir = prepare_repo(args.repo)
         
         try:
             # Process evals in batches
@@ -448,9 +498,9 @@ CRITERIA:
                 print()  # Blank line between batches
         
         finally:
-            # Cleanup temp directory
+            # Cleanup temp directory (with safety checks)
             print(f"{Colors.CYAN}Cleaning up...{Colors.RESET}")
-            shutil.rmtree(temp_dir, ignore_errors=True)
+            safe_cleanup_temp_dir(temp_dir)
     
     elif args.parallel > 1:
         # Run evaluations in parallel

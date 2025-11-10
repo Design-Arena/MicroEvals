@@ -1,0 +1,6 @@
+recursive-include evals *.yaml *.yml
+recursive-include config *.yaml *.yml
+include README.md
+include LICENSE
+include requirements.txt
+

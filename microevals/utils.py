@@ -3,6 +3,7 @@
 import subprocess
 import json
 import tempfile
+import shutil
 from pathlib import Path
 from typing import Dict, Any
 from datetime import datetime
@@ -51,6 +52,85 @@ class RateLimiter:
 # Global rate limiter instance
 _rate_limiter = RateLimiter(min_interval=2.0)
 
+# SAFETY: Marker file to identify our temp directories
+_MICROEVAL_TEMP_MARKER = ".microeval_temp_directory"
+
+
+def safe_cleanup_temp_dir(temp_dir: Path) -> bool:
+    """
+    Safely remove temp directory with SIX independent safety checks.
+    
+    Returns True if deleted, False if any safety check failed.
+    
+    SAFETY CHECKS (ALL must pass):
+    1. Directory exists and is a Path object
+    2. Path is inside system temp directory  
+    3. Directory name starts with "eval-"
+    4. Directory contains our safety marker file
+    5. Path is not current working directory
+    6. Path is not home directory or parent of home
+    """
+    # CHECK 0: Valid input
+    if not temp_dir or not isinstance(temp_dir, Path):
+        return False
+    
+    temp_dir = temp_dir.resolve()
+    
+    # CHECK 1: Directory exists
+    if not temp_dir.exists() or not temp_dir.is_dir():
+        return False
+    
+    # CHECK 2: Must be inside system temp directory
+    system_temp = Path(tempfile.gettempdir()).resolve()
+    try:
+        temp_dir.relative_to(system_temp)
+    except ValueError:
+        print(f"⚠️  SAFETY: Refusing to delete {temp_dir} - not in system temp")
+        return False
+    
+    # CHECK 3: Directory name must start with "eval-"
+    if not temp_dir.name.startswith("eval-"):
+        print(f"⚠️  SAFETY: Refusing to delete {temp_dir} - missing 'eval-' prefix")
+        return False
+    
+    # CHECK 4: Must contain our safety marker
+    marker_file = temp_dir / _MICROEVAL_TEMP_MARKER
+    if not marker_file.exists():
+        print(f"⚠️  SAFETY: Refusing to delete {temp_dir} - missing safety marker")
+        return False
+    
+    # CHECK 5: Must not be current working directory
+    try:
+        if temp_dir == Path.cwd().resolve():
+            print(f"⚠️  SAFETY: Refusing to delete {temp_dir} - is current directory")
+            return False
+    except:
+        pass
+    
+    # CHECK 6: Must not be or contain home directory
+    try:
+        home_dir = Path.home().resolve()
+        if temp_dir == home_dir:
+            print(f"⚠️  SAFETY: Refusing to delete {temp_dir} - is home directory")
+            return False
+        # Check if home is inside temp_dir
+        try:
+            home_dir.relative_to(temp_dir)
+            print(f"⚠️  SAFETY: Refusing to delete {temp_dir} - contains home directory")
+            return False
+        except ValueError:
+            pass  # Good - home is not inside temp_dir
+    except:
+        pass
+    
+    # ALL CHECKS PASSED - safe to delete
+    try:
+        shutil.rmtree(temp_dir)
+        return True
+    except Exception as e:
+        print(f"Warning: Failed to cleanup {temp_dir}: {e}")
+        return False
+
 
 def load_source(source_type: str, location: str, s3_client=None, bucket_name: str = None, base_path: str = None) -> dict:
     """Load evaluation YAML from various sources (url, s3_key, inline, or file)"""
@@ -78,21 +158,55 @@ def load_source(source_type: str, location: str, s3_client=None, bucket_name: st
     raise ValueError(f"Unknown source type: {source_type}")
 
 
-def clone_repo(repo_url: str) -> Path:
-    """Clone GitHub repository to temp directory"""
+def prepare_repo(repo_url: str) -> Path:
+    """
+    Prepare repository for evaluation (clone remote or copy local).
+    Always returns a MARKED temp directory that can be safely deleted.
+    """
     temp_dir = Path(tempfile.mkdtemp(prefix="eval-"))
     
-    result = subprocess.run(
-        ['git', 'clone', '--depth', '1', repo_url, str(temp_dir)],
-        capture_output=True,
-        text=True,
-        timeout=60
-    )
-    
-    if result.returncode != 0:
-        raise Exception(f"Failed to clone repository: {result.stderr}")
-    
-    return temp_dir
+    try:
+        # Detect if local path or remote URL
+        if not repo_url.startswith(('http://', 'https://', 'git@')):
+            # Local path - copy to temp for read-only safety
+            local_path = Path(repo_url).resolve()
+            if not local_path.exists():
+                raise Exception(f"Local path does not exist: {repo_url}")
+            
+            # Copy with ignore patterns
+            ignore = shutil.ignore_patterns(
+                'node_modules', '.git', '__pycache__', 'venv', '.venv',
+                '.next', 'dist', 'build', '.cache', 'coverage', '*.pyc', '.DS_Store'
+            )
+            
+            for item in local_path.iterdir():
+                if item.is_dir():
+                    shutil.copytree(item, temp_dir / item.name, ignore=ignore, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(item, temp_dir)
+        else:
+            # Remote URL - git clone
+            result = subprocess.run(
+                ['git', 'clone', '--depth', '1', repo_url, str(temp_dir)],
+                capture_output=True, text=True, timeout=60
+            )
+            if result.returncode != 0:
+                raise Exception(f"Failed to clone repository: {result.stderr}")
+        
+        # CRITICAL: Create safety marker file
+        marker = temp_dir / _MICROEVAL_TEMP_MARKER
+        marker.write_text(f"MicroEval temp directory created {datetime.now().isoformat()}\n")
+        
+        return temp_dir
+        
+    except Exception as e:
+        # Clean up if preparation failed
+        safe_cleanup_temp_dir(temp_dir)
+        raise
+
+
+# Keep clone_repo as an alias for backward compatibility
+clone_repo = prepare_repo
 
 
 def build_prompt(eval_dict: dict) -> str:
