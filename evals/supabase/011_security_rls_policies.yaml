@@ -1,0 +1,43 @@
+
+eval_id: supabase_security_rls_policies
+name: "Supabase RLS Policies Defined"
+description: "Check if Row Level Security policies are properly defined"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Make sure the database and Supabase are secure
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to make sure the database and Supabase are secure.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **RLS Policies Exist**
+     - Query Supabase to check for RLS policies
+     - Use admin credentials: URL={supabase_url}, Key={supabase_admin_key}
+     - Run SQL: SELECT schemaname, tablename, policyname, cmd FROM pg_policies WHERE schemaname = 'public'
+  
+  2. **Policies Cover CRUD Operations**
+     - Each table should have policies for operations being used (SELECT, INSERT, UPDATE, DELETE)
+     - Policies should use auth.uid() or similar for user-based access control
+     - At minimum, SELECT policies should exist for user data protection
+  
+  Look at the repo and check for evidence like:
+  - RLS policies exist in database
+  - Policies use authentication checks (auth.uid(), roles, etc.)
+  - SQL queries or migrations that create policies (CREATE POLICY ... ON table_name)
+  
+  SCORING:
+  - 1.0 (PASS): RLS policies exist for all tables AND use proper authentication checks (auth.uid() or similar)
+  - 0.0 (FAIL): Missing policies OR policies don't use authentication OR security vulnerability found
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js OR uses different database) OR cannot connect to verify policies
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_admin_key: "SUPABASE_ADMIN_KEY"
+

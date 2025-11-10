@@ -1,0 +1,23 @@
+eval_id: vercel_environment_variables
+name: "Environment Variables Configuration"
+description: "Verify the application properly handles environment variables for Vercel deployment"
+category: vercel
+
+criteria: |
+  Evaluate how the application handles environment variables in a Vercel deployment context.
+  
+  Check if the app demonstrates proper env var usage:
+  - Public vars prefixed with NEXT_PUBLIC_ for client access
+  - Sensitive vars (API keys, secrets) NOT prefixed with NEXT_PUBLIC_
+  - Graceful handling of missing environment variables
+  - No hardcoded secrets in the codebase
+  - Proper use of process.env with fallbacks where appropriate
+  - .env.example or documentation showing required vars
+  
+  SCORING:
+  - Score 1.0 (PASS): Environment variables properly scoped, no exposed secrets, graceful handling, clear documentation
+  - Score 0.0 (FAIL): Secrets exposed with NEXT_PUBLIC_, hardcoded API keys, app crashes when vars missing, or no documentation
+  - Score -1.0 (N/A): No environment variables used in the application
+
+inputs:
+  deployment_url: ""

@@ -1,0 +1,33 @@
+eval_id: shadcn_component_dependencies_003
+name: "Required Component Peer Dependencies"
+description: "Checks if peer dependencies are installed for shadcn components that require them"
+category: shadcn
+
+criteria: |
+  Verify peer dependencies for shadcn components that require them.
+  
+  ANTI-PATTERN:
+  - Using Form component without react-hook-form and zod
+  - Using Calendar without date-fns or day.js
+  - Using Sonner toast without sonner package
+  - Using Command without cmdk
+  
+  WHY IT'S WRONG:
+  - Runtime error: "Cannot find module 'react-hook-form'"
+  - Components crash when dependencies missing
+  - Each specialized component has specific requirements
+  
+  CORRECT:
+  - Form needs: react-hook-form, zod, @hookform/resolvers
+  - Calendar needs: react-day-picker, date-fns
+  - Command needs: cmdk
+  - Sonner needs: sonner
+  - Check shadcn docs for each component's requirements
+  
+  EVALUATION:
+  - Detect which shadcn components are used
+  - Check if required dependencies are in package.json
+  - If component used without dependency: score 0.0
+  - If no components with dependencies: score -1.0 (N/A)
+  
+

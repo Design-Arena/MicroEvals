@@ -1,0 +1,28 @@
+eval_id: react_incorrect_event_handler_002
+name: "Incorrect Event Handler Syntax"
+description: "Checks for event handlers that are called immediately instead of on event"
+category: react
+
+criteria: |
+  Detect event handlers with incorrect syntax causing immediate execution.
+  
+  ANTI-PATTERN:
+  - onClick={handleClick()} // calls immediately, not on click
+  - onChange={setValue(e.target.value)} // calls during render
+  - onSubmit={submitForm(data)} // calls immediately
+  
+  WHY IT'S WRONG:
+  - Function executes during render, not on event
+  - Infinite render loops if it updates state
+  - Common LLM mistake
+  
+  CORRECT:
+  - onClick={handleClick} // pass reference
+  - onClick={() => handleClick()} // arrow function wrapper
+  - onChange={(e) => setValue(e.target.value)} // arrow function
+  
+  SCORING:
+  - Score 1.0 (PASS): Event handlers exist AND all use correct syntax (no immediate execution)
+  - Score 0.0 (FAIL): Event handlers exist BUT incorrect syntax found (list specific locations)
+  - Score -1.0 (N/A): No event handlers found in codebase
+

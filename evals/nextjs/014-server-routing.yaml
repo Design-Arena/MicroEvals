@@ -1,0 +1,28 @@
+eval_id: nextjs_server_routing_014
+name: "Server-Side Routing and Redirects"
+description: "Validates proper server-side redirect() usage vs client-side navigation"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if redirects are done correctly based on context.
+  
+  CONTEXT: This eval applies to redirects in Next.js App Router.
+  
+  WHAT TO LOOK FOR:
+  Find redirect() calls and check if they're used in the right context (server vs client).
+  
+  ANTI-PATTERN (mark as failed):
+  - Server component (no 'use client') tries to use useRouter().push() for redirects
+  - Using window.location.href in server components or server actions
+  - Auth redirects done client-side when user data is only available server-side
+  
+  CORRECT PATTERN (mark as passed):
+  - Server-side redirects use redirect() from 'next/navigation' in server components
+  - Client-side navigation uses useRouter().push() in 'use client' components
+  - Auth checks done server-side with redirect() if unauthorized
+  
+  SCORING:
+  - Score 1.0 (PASS): Redirects use correct APIs based on context (redirect() in server, useRouter in client), no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (useRouter in server components, window.location in server, client-side auth redirects with server data)
+  - Score -1.0 (N/A): No redirects in codebase OR no Next.js App Router OR using Pages Router
+

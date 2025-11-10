@@ -1,0 +1,28 @@
+eval_id: tailwind_no_dynamic_class_construction_003
+name: "No Dynamic Tailwind Class Construction"
+description: "Checks for dynamic class string construction that breaks Tailwind's purging/scanning"
+category: tailwind
+
+criteria: |
+  Detect dynamic class string construction that breaks Tailwind purging.
+  
+  ANTI-PATTERN:
+  - className={'text-' + color} or className={`bg-${color}-500`}
+  - Building class names from variables/props
+  - Concatenating partial class names
+  
+  WHY IT'S WRONG:
+  - Tailwind scans for complete class strings at build time
+  - Dynamically constructed classes get purged
+  - Works in dev, breaks in production
+  
+  CORRECT:
+  - Complete class strings: className={color === 'red' ? 'text-red-500' : 'text-blue-500'}
+  - Use safelist in config for truly dynamic classes
+  - Or use inline styles for dynamic values
+  
+  SCORING:
+  - Score 1.0 (PASS): No dynamic class construction found - all Tailwind classes are complete strings
+  - Score 0.0 (FAIL): Dynamic class construction found (template literals or concatenation building classes)
+  - Score -1.0 (N/A): No Tailwind usage found in project
+

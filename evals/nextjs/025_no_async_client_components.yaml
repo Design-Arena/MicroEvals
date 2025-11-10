@@ -1,0 +1,29 @@
+eval_id: nextjs_no_async_client_components_025
+name: "No Async Client Components"
+description: "Catches async client components which cause runtime errors"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Look for a specific runtime error pattern.
+  
+  CONTEXT: This catches a common mistake that causes immediate runtime errors.
+  
+  WHAT TO LOOK FOR:
+  Find any file that has BOTH 'use client' directive AND an async component function.
+  
+  ANTI-PATTERN (mark as failed - THIS IS A BUG):
+  - File has 'use client' at the top
+  - AND exports an async function component: export default async function MyComponent()
+  - This causes error: "Client components cannot be async"
+  
+  CORRECT PATTERN (mark as passed):
+  - Client components ('use client') are NOT async
+  - Async components do NOT have 'use client' (they're server components)
+  
+  SCORING:
+  - Score 1.0 (PASS): No async client components found, all async components are server components, no anti-patterns found
+  - Score 0.0 (FAIL): Anti-pattern found - file has 'use client' AND async component function (THIS IS A BUG that breaks the app)
+  - Score -1.0 (N/A): No Next.js App Router OR no async component functions in codebase
+  
+  NOTE: This is a critical error. If found, this breaks the app immediately.
+

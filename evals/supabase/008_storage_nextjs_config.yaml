@@ -1,0 +1,45 @@
+
+eval_id: supabase_storage_nextjs_config
+name: "Next.js Image Config for Supabase Storage"
+description: "Check if Next.js is configured to allow images from Supabase storage"
+category: supabase
+framework: nextjs
+
+# What was the agent asked to do?
+task_description: |
+  Implement image upload functionality using Supabase storage
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to implement image upload functionality using Supabase storage.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **Next.js Config Exists**
+     - next.config.js or next.config.ts file exists
+     - File is properly formatted
+  
+  2. **Images RemotePatterns Configured**
+     - Config includes images.remotePatterns array
+     - Supabase storage hostname is in remotePatterns (extract from {supabase_url})
+     - Protocol is set to 'https'
+     - Pathname pattern covers storage paths (e.g., '/storage/v1/object/public/**')
+  
+  Look at the repo and check for evidence like:
+  - next.config.js or next.config.ts file
+  - images.remotePatterns configuration
+  - Supabase hostname in remotePatterns
+  - Correct protocol and pathname patterns
+  
+  SCORING:
+  - 1.0 (PASS): Next.js config exists AND Supabase storage hostname is properly configured in remotePatterns
+  - 0.0 (FAIL): Missing config file OR missing/incorrect remotePatterns configuration OR anti-patterns found
+  - -1.0 (N/A): Supabase storage is NOT USED (no @supabase/supabase-js OR uses different storage provider) OR not a Next.js app
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  project_root: "."
+

@@ -1,0 +1,31 @@
+eval_id: react_index_as_key_006
+name: "No Index as Key in Lists"
+description: "Checks for using array index as key prop (causes bugs with reordering)"
+category: react
+
+criteria: |
+  Detect using array index as key prop in lists.
+  
+  ANTI-PATTERN:
+  - items.map((item, index) => <div key={index}>{item}</div>)
+  - Using index as key prop
+  - Using i, idx, or other index variables as key
+  
+  WHY IT'S WRONG:
+  - Keys should be stable and unique identifiers
+  - Index changes when items are reordered/filtered/sorted
+  - Causes state to be associated with wrong items
+  - Performance issues and rendering bugs
+  - Common LLM mistake
+  
+  CORRECT:
+  - items.map(item => <div key={item.id}>{item.name}</div>)
+  - Use unique, stable ID from data
+  - If no ID, use combination of unique properties
+  - Only use index if list never changes order
+  
+  SCORING:
+  - Score 1.0 (PASS): Lists with key props exist AND all use stable IDs (no index as key)
+  - Score 0.0 (FAIL): Lists with key props exist BUT index used as key (list specific locations)
+  - Score -1.0 (N/A): No lists with key props found in codebase
+

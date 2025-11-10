@@ -1,0 +1,29 @@
+eval_id: react_missing_useeffect_dependencies_001
+name: "Missing Dependencies in useEffect"
+description: "Checks if useEffect hooks include all dependencies in their dependency array"
+category: react
+
+criteria: |
+  Detect useEffect with missing dependencies causing stale closures.
+  
+  ANTI-PATTERN:
+  - useEffect(() => { doSomething(prop) }, []) // prop not in deps
+  - useEffect(() => { fetch(url) }, []) // url not in deps
+  - Using props/state inside effect without listing them
+  
+  WHY IT'S WRONG:
+  - Stale closures - effect uses old values
+  - Effect doesn't re-run when dependencies change
+  - Subtle bugs that are hard to debug
+  - React ESLint rule: exhaustive-deps
+  
+  CORRECT:
+  - useEffect(() => { doSomething(prop) }, [prop])
+  - Include ALL variables from outer scope used in effect
+  - Or use useCallback/useMemo to stabilize references
+  
+  SCORING:
+  - Score 1.0 (PASS): useEffect hooks exist AND all include correct dependencies (no stale closures)
+  - Score 0.0 (FAIL): useEffect hooks exist BUT missing dependencies found (list specific locations)
+  - Score -1.0 (N/A): No useEffect hooks found in codebase
+

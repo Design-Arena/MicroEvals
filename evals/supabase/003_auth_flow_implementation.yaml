@@ -1,0 +1,46 @@
+
+eval_id: supabase_auth_flow_implementation
+name: "Supabase Auth Flow Implementation"
+description: "Check if agent implemented signup, login, and signout functionality"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Create a login page and authentication system
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to create a login page and authentication system.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **Sign Up Implementation**
+     - Uses supabase.auth.signUp() or similar
+     - Accepts email and password
+  
+  2. **Sign In Implementation**
+     - Uses supabase.auth.signInWithPassword() or similar
+     - Accepts email and password
+  
+  3. **Sign Out Implementation**
+     - Uses supabase.auth.signOut()
+     - Clears session properly
+  
+  Look at the repo and check for evidence like:
+  - Auth context or auth service with signUp method
+  - Auth context or auth service with signIn method
+  - Auth context or auth service with signOut method
+  - Proper Supabase auth API usage
+  
+  SCORING:
+  - 1.0 (PASS): All three auth methods (signUp, signIn, signOut) are properly implemented with correct Supabase API usage
+  - 0.0 (FAIL): Missing any of the three auth methods OR incorrect implementation OR anti-patterns found
+  - -1.0 (N/A): Supabase auth is NOT USED (no @supabase/supabase-js OR uses different auth provider like Firebase, Auth0, NextAuth)
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+

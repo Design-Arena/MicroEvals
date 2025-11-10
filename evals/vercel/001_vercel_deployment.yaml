@@ -1,0 +1,19 @@
+eval_id: vercel_deployment_check
+name: "Vercel Deployment"
+description: "Check if deployed site is live and matches the codebase"
+category: vercel
+
+criteria: |
+  Curl {deployment_url} and verify deployment is working. Check HTTP 200, valid HTML, no error pages.
+  
+  If the repository has source code, also verify the deployed content matches the codebase - compare
+  HTML against components/routes/framework markers. If repo is empty or has no code, just verify
+  the site loads successfully.
+  
+  SCORING:
+  - Score 1.0 (PASS): Site loads successfully (HTTP 200) AND content matches codebase (or no code to match)
+  - Score 0.0 (FAIL): Errors, broken deployment, or content completely different from codebase
+  - Score -1.0 (N/A): No deployment URL provided
+
+inputs:
+  deployment_url: ""  # Will be provided at runtime from generation metadata

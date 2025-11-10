@@ -1,0 +1,29 @@
+eval_id: nextjs_no_hooks_in_server_components_027
+name: "No React Hooks in Server Components"
+description: "Catches React hooks used without 'use client' - causes runtime error"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Look for hooks used in server components.
+  
+  CONTEXT: This catches a very common mistake that causes runtime errors.
+  
+  WHAT TO LOOK FOR:
+  Find files that use React hooks (useState, useEffect, useReducer, useContext, etc.) but DON'T have 'use client' directive.
+  
+  ANTI-PATTERN (mark as failed - THIS IS A BUG):
+  - File in app/ directory uses useState, useEffect, etc.
+  - File is missing 'use client' at the top
+  - Error: "You're importing a component that needs useState. This only works in a Client Component"
+  
+  CORRECT PATTERN (mark as passed):
+  - All files using hooks have 'use client' directive
+  - Server components don't use hooks
+  
+  SCORING:
+  - Score 1.0 (PASS): All files using React hooks have 'use client' directive, no anti-patterns found
+  - Score 0.0 (FAIL): Anti-pattern found - React hooks used without 'use client' directive (THIS IS A BUG that breaks the app)
+  - Score -1.0 (N/A): No Next.js App Router OR using Pages Router OR no React hooks used in codebase
+  
+  NOTE: This is one of the most common Next.js App Router mistakes.
+

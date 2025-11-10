@@ -1,0 +1,30 @@
+eval_id: nextjs_prefer_next_image_027
+name: "Prefer Next.js Image Component"
+description: "Validates using Next.js Image instead of img tags for image optimization"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if images are using Next.js optimization.
+  
+  CONTEXT: This eval applies to Next.js projects displaying images.
+  
+  WHAT TO LOOK FOR:
+  Find <img> tags or Image components in the codebase.
+  
+  ANTI-PATTERN (mark as failed):
+  - Using <img> tags instead of Next.js Image component
+  - Hardcoded image paths without optimization
+  - Missing required props (width, height, alt) on Image component
+  
+  CORRECT PATTERN (mark as passed):
+  - Import Image from 'next/image'
+  - Use <Image src="..." alt="..." width={X} height={Y} />
+  - All images have proper alt text for accessibility
+  
+  SCORING:
+  - Score 1.0 (PASS): All images use Next.js Image component with proper props, no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (using <img> tags, missing required props on Image, no alt text)
+  - Score -1.0 (N/A): No images displayed OR images are only SVGs OR not using Next.js
+  
+  NOTE: This is an optimization, not a bug. <img> works but misses Next.js optimizations.
+

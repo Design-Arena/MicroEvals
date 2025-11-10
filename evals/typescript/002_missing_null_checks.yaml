@@ -1,0 +1,33 @@
+eval_id: typescript_missing_null_checks_002
+name: "Missing Null/Undefined Checks"
+description: "Checks for missing null/undefined checks before accessing properties"
+category: typescript
+
+criteria: |
+  Detect property access without null/undefined checks.
+  
+  ANTI-PATTERN:
+  - user.name when user might be null/undefined
+  - data.items[0].value without checking data exists
+  - Accessing nested properties without optional chaining
+  
+  WHY IT'S WRONG:
+  - Runtime error: "Cannot read property 'name' of undefined"
+  - App crashes
+  - Common with API responses, optional props
+  - TypeScript might not catch if types are wrong
+  
+  CORRECT:
+  - user?.name (optional chaining)
+  - if (user) { user.name }
+  - user && user.name
+  - data?.items?.[0]?.value (nested optional chaining)
+  
+  SCORING:
+  - Score 1.0 (PASS): No missing null checks found, all property accesses are safe
+  - Score 0.0 (FAIL): Missing null checks found, unsafe property access detected
+  - Score -1.0 (N/A): Not a TypeScript project, can't evaluate
+  
+  Note: Finding NO missing null checks is a GOOD thing and should score 1.0 (PASS).
+  The absence of unsafe property access means the code properly handles nullability.
+

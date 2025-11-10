@@ -1,0 +1,49 @@
+
+eval_id: supabase_storage_image_upload
+name: "Supabase Storage Image Upload Implementation"
+description: "Check if image upload and display functionality is properly implemented"
+category: supabase
+framework: nextjs
+
+# What was the agent asked to do?
+task_description: |
+  Implement image upload functionality using Supabase storage
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to implement image upload functionality using Supabase storage.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **Upload Implementation**
+     - Uses .storage.from().upload() method
+     - Handles file selection and upload
+     - Proper error handling for upload
+  
+  2. **Image Display with Next.js Image Component**
+     - Uses Next.js Image component (next/image)
+     - Image src points to Supabase storage URLs
+     - Proper width/height or fill mode
+  
+  3. **Public URL Retrieval**
+     - Uses .storage.from().getPublicUrl() or similar
+     - Correctly constructs image URLs from storage
+  
+  Look at the repo and check for evidence like:
+  - Upload functionality using Supabase storage API
+  - Next.js Image component with Supabase URLs
+  - Public URL retrieval from storage
+  - Proper implementation in components or API routes
+  
+  SCORING:
+  - 1.0 (PASS): Upload is implemented AND Next.js Image component is used with Supabase storage URLs
+  - 0.0 (FAIL): Missing upload implementation OR missing/incorrect Image component usage OR anti-patterns found
+  - -1.0 (N/A): Supabase storage is NOT USED (no @supabase/supabase-js OR uses different storage provider) OR no image upload feature exists
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+

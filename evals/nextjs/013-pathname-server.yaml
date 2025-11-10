@@ -1,0 +1,29 @@
+eval_id: nextjs_pathname_server_013
+name: "Dynamic Route Parameters in Server Components"
+description: "Validates using params prop in dynamic route server components"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if dynamic routes properly use params.
+  
+  CONTEXT: This eval applies to Next.js App Router with dynamic routes.
+  
+  WHAT TO LOOK FOR:
+  Find dynamic route folders (app/[id], app/posts/[slug], etc.) and check their page.tsx files.
+  
+  ANTI-PATTERN (mark as failed):
+  - Dynamic route page component tries to use useRouter() or useParams() in server component
+  - Server component doesn't accept params prop but needs route parameters
+  - Component is marked 'use client' just to access route params
+  
+  CORRECT PATTERN (mark as passed):
+  - Server component accepts params prop: async function Page({ params })
+  - Uses params.id or params.slug etc. to fetch data
+  - Component is async and awaits data fetching
+  - No 'use client' needed just for route params
+  
+  SCORING:
+  - Score 1.0 (PASS): Dynamic route server components properly use params prop, no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (using useRouter/useParams in server components, missing params prop, 'use client' just for route params)
+  - Score -1.0 (N/A): No dynamic routes in codebase OR using Pages Router only OR no Next.js App Router
+

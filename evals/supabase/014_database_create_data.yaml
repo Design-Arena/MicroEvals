@@ -1,0 +1,44 @@
+
+eval_id: supabase_database_create_data
+name: "Supabase Database Create/Insert Data"
+description: "Check if agent implements INSERT operations to store data in database"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Build an application that stores/saves data to the database
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to build an application that stores/saves data to the database.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **INSERT Operation Exists**
+     - Find at least one INSERT operation in the code
+     - Uses .from().insert() or similar method
+     - Located in forms, API routes, or server actions
+  
+  2. **Insert Works**
+     - Test the insert operation against the database
+     - Use provided credentials: URL={supabase_url}, Key={supabase_anon_key}
+     - Verify data can be inserted into the expected table: {expected_table}
+  
+  Look at the repo and check for evidence like:
+  - .from('table').insert() operations
+  - Form submissions or data creation logic
+  - Successful insert execution
+  
+  SCORING:
+  - 1.0 (PASS): INSERT operation exists in code AND successfully adds data to database
+  - 0.0 (FAIL): Missing INSERT operation OR insert fails OR data cannot be created
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js OR uses different database) OR no data creation operations exist
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+  supabase_admin_key: "SUPABASE_ADMIN_KEY"
+

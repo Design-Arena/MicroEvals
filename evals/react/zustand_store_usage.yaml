@@ -1,0 +1,25 @@
+eval_id: zustand_store_usage
+name: "Zustand Store Hook Usage"
+description: "Verify the agent correctly identifies and fixes improper Zustand store hook usage patterns"
+category: react
+
+criteria: |
+  Detect improper Zustand store hook usage patterns.
+  
+  ANTI-PATTERNS:
+  - useMemo(() => useMyStore, []) - wrapping store hook
+  - useMemo(() => useMyStore(), []) - calling inside useMemo
+  - useMemo(() => create(...), []) - creating store in component
+  
+  CORRECT:
+  - const store = useMyStore (direct assignment)
+  - const useMyStore = create<T>(...) (at module level)
+  
+  SCORING:
+  - Score 1.0 (PASS): Zustand store usage exists AND used correctly (direct assignment, no wrapping)
+  - Score 0.0 (FAIL): Zustand store usage exists BUT wrapped incorrectly (list specific locations)
+  - Score -1.0 (N/A): No Zustand store usage found in codebase
+
+inputs:
+  store_name: "auto-detect"
+

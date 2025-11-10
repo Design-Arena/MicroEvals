@@ -1,0 +1,28 @@
+eval_id: react_missing_return_in_map_003
+name: "Missing Return in Array.map()"
+description: "Checks for missing return statements in array.map() causing undefined renders"
+category: react
+
+criteria: |
+  Detect array.map() with curly braces but missing return statement.
+  
+  ANTI-PATTERN:
+  - array.map(item => { <Component /> }) // missing return
+  - items.map((item) => { <div>{item}</div> }) // missing return
+  - data.map(x => { const y = transform(x); <Element y={y} /> })
+  
+  WHY IT'S WRONG:
+  - Returns undefined instead of component
+  - Nothing renders but no error shown
+  - Very common LLM mistake
+  
+  CORRECT:
+  - array.map(item => <Component />) // implicit return
+  - array.map(item => { return <Component /> }) // explicit return
+  - array.map((item) => { const y = transform(item); return <Element y={y} /> })
+  
+  SCORING:
+  - Score 1.0 (PASS): Array.map() with JSX exists AND all have proper returns (explicit or implicit)
+  - Score 0.0 (FAIL): Array.map() with JSX exists BUT missing return statements found (list specific locations)
+  - Score -1.0 (N/A): No array.map() with JSX found in codebase
+

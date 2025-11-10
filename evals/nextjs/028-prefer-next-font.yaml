@@ -1,0 +1,30 @@
+eval_id: nextjs_prefer_next_font_028
+name: "Prefer Next.js Font Optimization"
+description: "Validates using next/font instead of external font CDN or CSS imports"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if custom fonts are using Next.js optimization.
+  
+  CONTEXT: This eval applies to Next.js projects using custom fonts.
+  
+  WHAT TO LOOK FOR:
+  Find font loading patterns - check HTML head, CSS @import, or next/font imports.
+  
+  ANTI-PATTERN (mark as failed):
+  - Google Fonts loaded via CDN link in HTML: <link href="https://fonts.googleapis.com/...">
+  - @import url('https://fonts.googleapis.com/...') in CSS
+  - External stylesheet for fonts instead of next/font
+  
+  CORRECT PATTERN (mark as passed):
+  - Import fonts from next/font/google: import { Inter } from 'next/font/google'
+  - Configure with options: const inter = Inter({ subsets: ['latin'] })
+  - Apply className: <body className={inter.className}>
+  
+  SCORING:
+  - Score 1.0 (PASS): Custom fonts use next/font optimization, no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (loading fonts via CDN links, @import in CSS, external stylesheets)
+  - Score -1.0 (N/A): No custom fonts used OR not using Next.js OR no Next.js App Router
+  
+  NOTE: This is an optimization, not a bug. CDN fonts work but are slower.
+

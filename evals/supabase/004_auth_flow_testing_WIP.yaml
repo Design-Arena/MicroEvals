@@ -1,0 +1,52 @@
+
+eval_id: supabase_auth_flow_testing
+name: "Supabase Auth Flow Testing"
+description: "Test the actual authentication flow with live credentials"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Create a login page and authentication system
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to create a login page and authentication system. Test if it actually works.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if the authentication works by testing:
+  
+  1. **Sign Up Works**
+     - Test account creation with new email/password
+     - Verify account is created in Supabase
+     - Use provided credentials: URL={supabase_url}, Key={supabase_admin_key}
+  
+  2. **Sign In Works**
+     - Test login with test account: {test_email} / {test_password}
+     - Verify session is created
+     - User state is updated
+  
+  3. **Sign Out Works**
+     - Test logout functionality
+     - Verify session is cleared
+     - User state is reset
+  
+  Look at the repo and check for evidence like:
+  - Start the application
+  - Test the complete authentication flow
+  - Verify auth state changes correctly
+  - Check Supabase dashboard for user creation
+  
+  SCORING:
+  - 1.0 (PASS): All three operations work (signUp, signIn, signOut) when tested live with provided credentials
+  - 0.0 (FAIL): Any of the three operations fail OR unable to test OR authentication errors
+  - -1.0 (N/A): Cannot test authentication flow (app doesn't run, no test environment, or auth not implemented)
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+  supabase_admin_key: "SUPABASE_ADMIN_KEY"
+  test_email: "test@example.com"
+  test_password: "testpassword123"
+

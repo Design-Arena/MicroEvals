@@ -1,0 +1,26 @@
+eval_id: nextjs_no_serial_await_026
+name: "Avoid Serial Await (Use Parallel Fetching)"
+description: "Checks for serial await pattern that should be parallelized with Promise.all"
+category: nextjs
+
+criteria: |
+  Detect serial await for independent requests (should use Promise.all).
+  
+  ANTI-PATTERN:
+  - const data1 = await fetch1();
+  - const data2 = await fetch2(); // Independent of data1 - should be parallel!
+  - Serial awaiting when requests don't depend on each other
+  
+  WHY IT'S WRONG:
+  - Wastes time - second request waits unnecessarily for first to complete
+  - Poor performance - doubles the total wait time
+  - Example: 2 serial 1s requests = 2s total, parallel = 1s total
+  
+  CORRECT APPROACH:
+  - const [data1, data2] = await Promise.all([fetch1(), fetch2()])
+  - Only use serial await when requests are dependent
+  
+  SCORING:
+  - Score 1.0 (PASS): No serial await for independent requests - using Promise.all appropriately
+  - Score 0.0 (FAIL): Serial await detected for independent requests
+  - Score -1.0 (N/A): No multiple async operations found, or all serial awaits are legitimately dependent

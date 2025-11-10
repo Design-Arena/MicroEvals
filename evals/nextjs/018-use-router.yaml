@@ -1,0 +1,28 @@
+eval_id: nextjs_use_router_018
+name: "useRouter Programmatic Navigation"
+description: "Validates proper useRouter import from next/navigation (App Router)"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if useRouter is imported from the correct package.
+  
+  CONTEXT: This eval applies to Next.js App Router codebases using programmatic navigation.
+  
+  WHAT TO LOOK FOR:
+  Find any imports of useRouter hook.
+  
+  ANTI-PATTERN (mark as failed):
+  - Importing useRouter from 'next/router' in App Router app/ directory
+  - Using window.location.href = '...' for Next.js navigation
+  - Missing 'use client' in file that uses useRouter
+  
+  CORRECT PATTERN (mark as passed):
+  - Imports useRouter from 'next/navigation' (App Router)
+  - File has 'use client' directive
+  - Uses router.push(), router.back(), router.refresh() correctly
+  
+  SCORING:
+  - Score 1.0 (PASS): useRouter imported from 'next/navigation' with 'use client' directive, no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (importing from 'next/router' in App Router, window.location, missing 'use client')
+  - Score -1.0 (N/A): No programmatic navigation OR using Pages Router only OR only using Link components
+

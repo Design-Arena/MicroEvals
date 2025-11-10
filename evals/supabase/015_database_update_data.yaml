@@ -1,0 +1,47 @@
+
+eval_id: supabase_database_update_data
+name: "Supabase Database Update Data"
+description: "Check if agent implements UPDATE operations to modify existing data"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Build an application that updates existing data in the database
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to build an application that updates existing data in the database.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **UPDATE Operation Exists**
+     - Find at least one UPDATE operation in the code
+     - Uses .from().update() or similar method
+     - Includes proper WHERE clause (.eq(), .match(), etc.) to target specific rows
+     - Located in API routes, server actions, or update handlers
+  
+  2. **Update Works**
+     - Test the update operation against the database
+     - Use provided credentials: URL={supabase_url}, Key={supabase_anon_key}
+     - Verify data can be updated in the expected table: {expected_table}
+     - Examples: incrementing counters, editing records, toggling states
+  
+  Look at the repo and check for evidence like:
+  - .from('table').update() operations
+  - Update logic (edit forms, increment/decrement, state changes)
+  - Proper row targeting with .eq() or similar
+  - Successful update execution
+  
+  SCORING:
+  - 1.0 (PASS): UPDATE operation exists in code with proper WHERE clause AND successfully modifies database data
+  - 0.0 (FAIL): Missing UPDATE operation OR update fails OR no proper WHERE clause (missing .eq() or similar)
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js OR uses different database) OR no data update operations exist
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+  supabase_admin_key: "SUPABASE_ADMIN_KEY"
+

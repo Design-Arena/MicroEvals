@@ -1,0 +1,27 @@
+eval_id: tailwind_content_paths_002
+name: "Correct Content Paths in Tailwind Config"
+description: "Checks if tailwind.config content paths include all files using Tailwind classes"
+category: tailwind
+
+criteria: |
+  Verify content paths in tailwind.config include all files with Tailwind classes.
+  
+  ANTI-PATTERN:
+  - content: ['./app/**/*.{js,ts,jsx,tsx}'] but components are in /components
+  - Missing file extensions (.mdx, .vue, etc.)
+  - Hardcoded paths that don't match actual file structure
+  
+  WHY IT'S WRONG:
+  - Classes in files not matched by content paths get purged in production
+  - Styles work in dev but break in production build
+  - Silent failure - no error, just missing styles
+  
+  CORRECT:
+  - content: ['./app/**/*.{js,ts,jsx,tsx,mdx}', './components/**/*.{js,ts,jsx,tsx}']
+  - Include all directories and extensions where Tailwind is used
+  
+  SCORING:
+  - Score 1.0 (PASS): Tailwind config exists AND content paths correctly include all files with Tailwind classes
+  - Score 0.0 (FAIL): Tailwind config exists BUT files with classes are outside content paths (anti-pattern)
+  - Score -1.0 (N/A): No Tailwind config found in project
+

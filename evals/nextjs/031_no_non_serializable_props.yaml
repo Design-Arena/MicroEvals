@@ -1,0 +1,31 @@
+eval_id: nextjs_no_non_serializable_props_031
+name: "No Non-Serializable Props to Server Components"
+description: "Catches passing functions to server components - causes runtime error"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Look for non-serializable props passed to server components.
+  
+  CONTEXT: Server components can only receive JSON-serializable props.
+  
+  WHAT TO LOOK FOR:
+  Find server components (files without 'use client') being used with function props.
+  
+  ANTI-PATTERN (mark as failed - THIS IS A BUG):
+  - Passing onClick, onChange, or other function props to a server component
+  - Example: <ServerComponent onClick={handler} /> where ServerComponent has no 'use client'
+  - Error: "Functions cannot be passed to Client Components"
+  - Also applies to class instances, Dates, symbols
+  
+  CORRECT PATTERN (mark as passed):
+  - Server components only receive serializable props (strings, numbers, plain objects, arrays)
+  - Components that need event handlers have 'use client' directive
+  - Or wrap the interactive part in a client component
+  
+  SCORING:
+  - Score 1.0 (PASS): Server components only receive serializable props (strings, numbers, objects, arrays), no anti-patterns found
+  - Score 0.0 (FAIL): Anti-pattern found - passing functions or non-serializable data to server components (THIS IS A BUG)
+  - Score -1.0 (N/A): No custom components OR all components are client components OR no Next.js App Router
+  
+  NOTE: Look at the component definition - if it has no 'use client' and receives function props, that's the bug.
+

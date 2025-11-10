@@ -1,0 +1,30 @@
+eval_id: nextjs_app_router_migration_030
+name: "App Router Migration (No Pages Router Patterns)"
+description: "Checks for Pages Router patterns in App Router apps"
+category: nextjs
+
+criteria: |
+  Check for Pages Router patterns in App Router apps.
+  
+  OLD PATTERNS (Pages Router):
+  - pages/ directory with route files
+  - _app.js, _document.js special files
+  - getServerSideProps, getStaticProps, getInitialProps
+  - import from 'next/router' (should use 'next/navigation')
+  
+  WHY IT'S WRONG:
+  - Mixing routers causes confusion and bugs
+  - App Router patterns don't work in Pages Router files
+  - Different mental models for routing and data fetching
+  - Can't leverage new App Router features
+  
+  CORRECT APPROACH (App Router):
+  - app/ directory with route folders
+  - layout.js, page.js, loading.js, error.js
+  - Server components with async/await
+  - import from 'next/navigation' (useRouter, usePathname, etc.)
+  
+  SCORING:
+  - Score 1.0 (PASS): Fully migrated to App Router - no Pages Router patterns
+  - Score 0.0 (FAIL): App Router exists but old Pages Router patterns still present
+  - Score -1.0 (N/A): No app/ directory exists (pure Pages Router app, which is fine for legacy apps)

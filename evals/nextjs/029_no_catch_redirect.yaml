@@ -1,0 +1,31 @@
+eval_id: nextjs_no_catch_redirect_029
+name: "No redirect()/notFound() in Try-Catch"
+description: "Catches redirect/notFound in try-catch which breaks navigation"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Look for a subtle but critical bug.
+  
+  CONTEXT: redirect() and notFound() work by throwing special errors that Next.js catches.
+  
+  WHAT TO LOOK FOR:
+  Find any try-catch blocks that contain redirect() or notFound() calls.
+  
+  ANTI-PATTERN (mark as failed - THIS IS A BUG):
+  - try { redirect('/login') } catch (e) { ... }
+  - try { if (condition) notFound() } catch (error) { ... }
+  - Catching the error prevents Next.js from handling navigation
+  - Results in broken redirects or 404 pages not showing
+  
+  CORRECT PATTERN (mark as passed):
+  - redirect() and notFound() are NOT inside try-catch blocks
+  - If you need validation, do it BEFORE calling redirect/notFound
+  - Let these functions throw - Next.js will catch them correctly
+  
+  SCORING:
+  - Score 1.0 (PASS): redirect() and notFound() are NOT inside try-catch blocks, no anti-patterns found
+  - Score 0.0 (FAIL): Anti-pattern found - redirect() or notFound() called inside try-catch (THIS IS A BUG that breaks navigation)
+  - Score -1.0 (N/A): No usage of redirect() or notFound() OR no Next.js App Router
+  
+  NOTE: This is a subtle bug that makes navigation silently fail.
+

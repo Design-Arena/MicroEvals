@@ -1,0 +1,49 @@
+
+eval_id: supabase_security_no_service_key_exposed
+name: "Supabase Service Key Not Exposed"
+description: "Check that service role key is not exposed in client-side code"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Make sure the database and Supabase are secure
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to make sure the database and Supabase are secure.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **No Service Key in Client Code**
+     - Search all client-side code for service role key patterns
+     - Check for hardcoded service_role keys
+     - Verify only anon key is used in client-side code
+  
+  2. **Service Key Only in Server**
+     - If service key is used, it should only be in server-side code
+     - Examples: API routes, server actions, backend services
+     - Never in frontend components or public environment variables
+  
+  3. **Environment Variables Named Correctly**
+     - Client variables should use PUBLIC/VITE prefix (e.g., NEXT_PUBLIC_SUPABASE_ANON_KEY)
+     - Service key should NOT have public prefix
+  
+  Look at the repo and check for evidence like:
+  - Only anon key in client-side code
+  - Service key only in server-side code (if used at all)
+  - Proper environment variable naming
+  - No hardcoded keys anywhere
+  
+  SCORING:
+  - 1.0 (PASS): Service key is NOT exposed in client code AND only anon key is used client-side with proper env variable naming
+  - 0.0 (FAIL): Service key found in client code OR hardcoded keys OR improper env variable usage (CRITICAL SECURITY ISSUE)
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js OR no Supabase environment variables found)
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+  supabase_service_key: "SUPABASE_SERVICE_KEY"
+

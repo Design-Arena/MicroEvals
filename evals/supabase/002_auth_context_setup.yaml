@@ -1,0 +1,43 @@
+
+eval_id: supabase_auth_context_setup
+name: "Supabase Auth State Management Setup"
+description: "Check if agent created auth state management with proper methods"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Create a login page and authentication system
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to create a login page and authentication system.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **Auth State Management Exists**
+     - Find auth context, store, service, or provider file
+     - Examples: contexts/auth.tsx, stores/auth.ts, services/auth.ts, composables/useAuth.ts, etc.
+     - Exports auth state management (provider, store, service, or composable)
+  
+  2. **Auth Methods Available**
+     - Exports auth interface/hook/composable (useAuth, authStore, authService, etc.)
+     - Provides user state
+     - Provides auth methods (signUp, signIn, signOut or similar)
+  
+  Look at the repo and check for evidence like:
+  - Auth state management file (React Context, Vue store, Svelte store, Angular service, etc.)
+  - Exported auth interface (useAuth, authStore, authService, etc.)
+  - Auth methods available (signUp, signIn, signOut)
+  
+  SCORING:
+  - 1.0 (PASS): Auth state management exists AND auth methods are available with user state
+  - 0.0 (FAIL): Missing auth state management OR missing auth methods OR anti-patterns found
+  - -1.0 (N/A): Supabase is NOT USED in the codebase (no @supabase/supabase-js dependency) OR no authentication system exists at all. If the app uses a different auth provider (Firebase Auth, Auth0, NextAuth, etc.), this is N/A.
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+

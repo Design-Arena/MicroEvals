@@ -1,0 +1,30 @@
+eval_id: nextjs_no_use_effect_020
+name: "Avoid Unnecessary useEffect"
+description: "Checks for unnecessary useEffect usage that can be replaced with direct code execution"
+category: nextjs
+
+criteria: |
+  Detect unnecessary useEffect hooks that can be replaced with direct code execution.
+  
+  ANTI-PATTERNS:
+  - useEffect for browser/navigator detection (can be done directly in component body)
+  - useEffect for setting derived state (should compute during render)
+  - useEffect with empty deps for one-time calculations (can be done at module level or during render)
+  - useEffect just to call a function once (can call directly in component)
+  
+  WHY IT'S WRONG:
+  - Adds unnecessary complexity and indirection
+  - Can cause extra re-renders
+  - Makes code harder to understand and maintain
+  - May cause timing issues (effect runs after paint)
+  
+  CORRECT APPROACH:
+  - Compute values directly in component body
+  - Use useMemo for expensive derived computations
+  - Call functions directly if they don't need side effects
+  - Only use useEffect for actual side effects (subscriptions, DOM manipulation, etc.)
+  
+  SCORING:
+  - Score 1.0 (PASS): No unnecessary useEffect found - all effects are for legitimate side effects
+  - Score 0.0 (FAIL): Unnecessary useEffect detected - code that doesn't need side effects
+  - Score -1.0 (N/A): No React/Next.js code found in project

@@ -1,0 +1,43 @@
+
+eval_id: supabase_storage_client_setup
+name: "Supabase Storage Client Setup"
+description: "Check if agent set up Supabase storage client and packages"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Implement image upload functionality using Supabase storage
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to implement image upload functionality using Supabase storage.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **Storage Client Available**
+     - Supabase client is configured (from 001_client_setup)
+     - Can access storage methods (.storage.from())
+  
+  2. **Connection Test**
+     - Test connection to storage using provided credentials: URL={supabase_url}, Key={supabase_anon_key}
+     - Verify storage bucket exists or can be accessed
+     - Use admin key if needed: {supabase_admin_key}
+  
+  Look at the repo and check for evidence like:
+  - Supabase client with storage access
+  - Storage methods being used (.storage.from().upload(), .storage.from().getPublicUrl())
+  - Successful connection to storage
+  
+  SCORING:
+  - 1.0 (PASS): Storage client is available AND connection to storage works with provided credentials
+  - 0.0 (FAIL): Missing storage client OR connection fails OR storage methods not accessible
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js) OR no file storage feature exists (using different provider like AWS S3, Cloudinary, etc.)
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+  supabase_admin_key: "SUPABASE_ADMIN_KEY"
+

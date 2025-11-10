@@ -1,0 +1,22 @@
+eval_id: nextjs_tailwind_v4_config
+name: "Tailwind CSS v4 Configuration"
+description: "Verify the agent correctly recognizes and configures Tailwind CSS v4 syntax"
+category: tailwind
+
+criteria: |
+  Check Tailwind CSS v4 configuration.
+  
+  REQUIREMENTS:
+  1. globals.css contains: @import "tailwindcss";
+  2. globals.css does NOT contain old v3 directives (@tailwind base/components/utilities)
+  3. postcss.config has: plugins: ["@tailwindcss/postcss"]
+  4. package.json has: "tailwindcss": "^4"
+  
+  EVALUATION:
+  - If no Tailwind v4: score -1.0 (N/A)
+  - If all requirements met: score 1.0
+  - If using old v3 syntax: score 0.0
+
+# Optional: Custom inputs for this specific eval
+inputs:
+  deployment_url: "https://agentic-9d1c6c3d.vercel.app/"

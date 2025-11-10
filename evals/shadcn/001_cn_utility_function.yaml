@@ -1,0 +1,31 @@
+eval_id: shadcn_cn_utility_function_001
+name: "CN Utility Function Required"
+description: "Checks if the cn() utility function exists when shadcn components are used"
+category: shadcn
+
+criteria: |
+  Verify cn() utility function exists for shadcn components.
+  
+  ANTI-PATTERN:
+  - Using shadcn components without lib/utils.ts
+  - Missing cn() function that merges Tailwind classes
+  - Components imported but utilities not set up
+  
+  WHY IT'S WRONG:
+  - All shadcn components use cn() function
+  - Runtime error: "cn is not defined"
+  - App crashes immediately
+  
+  CORRECT:
+  - lib/utils.ts with: export function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)) }
+  - Requires: clsx and tailwind-merge packages
+  - Must match path alias in components.json
+  
+  EVALUATION:
+  - Check if shadcn components exist (check for @/components/ui/)
+  - Verify lib/utils.ts exists with cn function
+  - Verify clsx and tailwind-merge in package.json
+  - If components exist but cn missing: score 0.0
+  - If no shadcn components: score -1.0 (N/A)
+  
+

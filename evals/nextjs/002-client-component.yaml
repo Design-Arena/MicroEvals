@@ -1,0 +1,26 @@
+eval_id: nextjs_client_component_002
+name: "Client Component with State"
+description: "Validates proper client component implementation with React state management"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if components using React hooks have the 'use client' directive.
+  
+  CONTEXT: This eval applies to Next.js App Router codebases using React hooks.
+  
+  WHAT TO LOOK FOR:
+  Find any files that import and use React hooks (useState, useEffect, useReducer, etc.)
+  
+  ANTI-PATTERN (mark as failed):
+  - File uses useState, useEffect, or other React hooks but is missing 'use client' directive at top
+  - Component in app/ directory uses hooks without 'use client'
+  
+  CORRECT PATTERN (mark as passed):
+  - All components using hooks have 'use client' at the top of the file
+  - Or they properly import client components that handle the hooks
+  
+  SCORING:
+  - Score 1.0 (PASS): All components using React hooks have 'use client' directive, no anti-patterns found
+  - Score 0.0 (FAIL): Components use React hooks without 'use client' directive
+  - Score -1.0 (N/A): No Next.js App Router OR no components use React hooks OR using Pages Router
+

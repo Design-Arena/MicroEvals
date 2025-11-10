@@ -1,0 +1,55 @@
+
+eval_id: supabase_auth_google_oauth
+name: "Supabase Google OAuth Implementation"
+description: "Check if agent implemented Google OAuth login correctly"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Add Google OAuth login
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to add Google OAuth login functionality.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **OAuth Sign In Implementation**
+     - Uses supabase.auth.signInWithOAuth({ provider: 'google' }) or similar
+     - Correct provider specified as 'google'
+     - Proper async/await or promise handling
+  
+  2. **Redirect Configuration**
+     - Redirect URLs configured (e.g., redirectTo option)
+     - Uses environment variables for redirect URLs (not hard-coded)
+     - Check for NEXT_PUBLIC_SITE_URL or similar env var usage
+  
+  3. **No Hard-Coded Secrets**
+     - No Google client secrets in the code
+     - No hard-coded OAuth credentials
+     - Credentials should be in .env or .env.local (not committed)
+  
+  4. **Proper Redirect Handling**
+     - Auth callback route exists (e.g., /auth/callback)
+     - Exchanges code for session using supabase.auth.exchangeCodeForSession() or similar
+     - Handles redirect after successful authentication
+  
+  Look at the repo and check for evidence like:
+  - signInWithOAuth method with 'google' provider
+  - Environment variable usage for URLs/redirects
+  - Auth callback route handler
+  - No hard-coded secrets or credentials
+  - Proper error handling for OAuth flow
+  
+  SCORING:
+  - 1.0 (PASS): All requirements met (correct OAuth call, env vars for redirect, no secrets, callback handler exists)
+  - 0.0 (FAIL): Missing any requirement OR incorrect implementation OR security issues (hardcoded secrets/credentials)
+  - -1.0 (N/A): Supabase auth is NOT USED (no @supabase/supabase-js OR uses different auth provider) OR OAuth is not implemented at all
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+

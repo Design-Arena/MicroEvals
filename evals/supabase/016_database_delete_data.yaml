@@ -1,0 +1,47 @@
+
+eval_id: supabase_database_delete_data
+name: "Supabase Database Delete Data"
+description: "Check if agent implements DELETE operations to remove data"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Build an application that can delete data from the database
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to build an application that can delete data from the database.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **DELETE Operation Exists**
+     - Find at least one DELETE operation in the code
+     - Uses .from().delete() or similar method
+     - Includes proper WHERE clause (.eq(), .match(), etc.) to target specific rows
+     - Located in API routes, server actions, or delete handlers
+  
+  2. **Delete Works**
+     - Test the delete operation against the database
+     - Use provided credentials: URL={supabase_url}, Key={supabase_anon_key}
+     - Verify data can be deleted from the expected table: {expected_table}
+     - Create test data first, then verify deletion works
+  
+  Look at the repo and check for evidence like:
+  - .from('table').delete() operations
+  - Delete buttons or remove functionality
+  - Proper row targeting with .eq() or similar
+  - Successful delete execution
+  
+  SCORING:
+  - 1.0 (PASS): DELETE operation exists in code with proper WHERE clause AND successfully removes database data
+  - 0.0 (FAIL): Missing DELETE operation OR delete fails OR no proper WHERE clause (missing .eq() or similar)
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js OR uses different database) OR no data deletion operations exist
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+  supabase_admin_key: "SUPABASE_ADMIN_KEY"
+

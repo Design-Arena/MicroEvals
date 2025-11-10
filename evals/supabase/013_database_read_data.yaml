@@ -1,0 +1,44 @@
+
+eval_id: supabase_database_read_data
+name: "Supabase Database Read/Query Data"
+description: "Check if agent implements SELECT operations to read data from database"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Build an application that reads and displays data from the database
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to build an application that reads and displays data from the database.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **SELECT Query Exists**
+     - Find at least one SELECT operation in the code
+     - Uses .from().select() or similar query method
+     - Located in components, API routes, or server actions
+  
+  2. **Query Works**
+     - Test the query against the database
+     - Use provided credentials: URL={supabase_url}, Key={supabase_anon_key}
+     - Verify data can be retrieved from the expected table: {expected_table}
+  
+  Look at the repo and check for evidence like:
+  - .from('table').select() queries
+  - Data fetching in components or API routes
+  - Successful query execution
+  
+  SCORING:
+  - 1.0 (PASS): SELECT operation exists in code AND query successfully retrieves data from database
+  - 0.0 (FAIL): Missing SELECT operation OR query fails OR no data can be retrieved
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js OR uses different database like MongoDB, Firebase, etc.)
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+  supabase_admin_key: "SUPABASE_ADMIN_KEY"
+

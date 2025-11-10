@@ -1,0 +1,39 @@
+eval_id: typescript_unsafe_type_assertions_001
+name: "Unsafe Type Assertions"
+description: "Checks for type assertions (as) without runtime validation"
+category: typescript
+
+criteria: |
+  Detect type assertions that bypass type checking without validation.
+  
+  ANTI-PATTERN:
+  - const user = data as User // no validation
+  - response as MyType // assuming type without checking
+  - (value as any) to bypass errors
+  - Using 'as' without runtime validation
+  
+  WHY IT'S WRONG:
+  - Type assertions don't validate at runtime
+  - Causes crashes when data doesn't match assumed type
+  - TypeScript provides false sense of security
+  - Common LLM mistake
+  
+  CORRECT:
+  - Validate before asserting: if (isUser(data)) { const user = data as User }
+  - Use type guards: function isUser(obj: any): obj is User { ... }
+  - Use zod or similar for runtime validation
+  - Avoid 'as' unless absolutely necessary
+  
+  EVALUATION:
+  - Scan for 'as TypeName' assertions (excluding safe ones like 'as const')
+  - Check if there's validation before the assertion
+  - Particularly check API responses and external data
+  
+  SCORING:
+  - Score 1.0 (PASS): No unsafe type assertions found, or all type assertions have proper validation
+  - Score 0.0 (FAIL): Unsafe type assertions found without runtime validation
+  - Score -1.0 (N/A): Not a TypeScript project, can't evaluate
+  
+  Note: Finding ZERO type assertions is a GOOD thing and should score 1.0 (PASS).
+  The absence of unsafe patterns means the code is using proper TypeScript without bypassing type safety.
+

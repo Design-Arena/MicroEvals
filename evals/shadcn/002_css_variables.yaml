@@ -1,0 +1,32 @@
+eval_id: shadcn_css_variables_002
+name: "Required CSS Variables Defined"
+description: "Checks if shadcn theme CSS variables are defined in globals.css"
+category: shadcn
+
+criteria: |
+  Verify CSS variables for shadcn theme are defined.
+  
+  ANTI-PATTERN:
+  - Using shadcn components without CSS variable definitions
+  - Missing :root and .dark selectors in globals.css
+  - Components render but colors are broken/missing
+  
+  WHY IT'S WRONG:
+  - Components rely on CSS variables like --background, --foreground, etc.
+  - Without them, components have no colors or wrong colors
+  - Silent failure - no error, just broken UI
+  
+  CORRECT:
+  - globals.css must have:
+    :root { --background, --foreground, --primary, --secondary, etc. }
+  - .dark { ... } for dark mode variables
+  - All required shadcn CSS variables defined
+  
+  EVALUATION:
+  - Check if shadcn components exist
+  - Verify globals.css has :root with CSS variables
+  - Check for variables: --background, --foreground, --primary, --card, --border
+  - If components exist but variables missing: score 0.0
+  - If no shadcn components: score -1.0 (N/A)
+  
+

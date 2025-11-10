@@ -1,0 +1,28 @@
+eval_id: nextjs_avoid_fetch_in_effect_021
+name: "Avoid Fetch in useEffect"
+description: "Detects unnecessary client-side data fetching that should be server-side"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if data fetching is done server-side when possible.
+  
+  CONTEXT: This eval applies to Next.js App Router codebases with data fetching.
+  
+  WHAT TO LOOK FOR:
+  Find components that fetch data on mount. Check if they could be server components instead.
+  
+  ANTI-PATTERN (mark as failed):
+  - Page component has 'use client' and uses useEffect(() => { fetch(...) }, []) for initial data
+  - Component marked 'use client' solely to use useState/useEffect for non-interactive data fetching
+  - Loading data that doesn't depend on user interaction or client-side state
+  
+  CORRECT PATTERN (mark as passed):
+  - Page components are async server components that await fetch()
+  - Client components only fetch data in response to user interaction
+  - useEffect fetch is for real-time updates, polling, or client-specific needs
+  
+  SCORING:
+  - Score 1.0 (PASS): Data fetching done server-side when possible, client-side fetch only for valid reasons (user interaction, real-time), no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (useEffect fetch for initial data that should be server-side, 'use client' solely for non-interactive data)
+  - Score -1.0 (N/A): No data fetching OR all client-side fetching is legitimate OR using Pages Router
+

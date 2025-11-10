@@ -1,0 +1,36 @@
+eval_id: shadcn_tailwind_config_006
+name: "Tailwind Config Theme Extension"
+description: "Checks if Tailwind config includes required theme extension for shadcn CSS variables"
+category: shadcn
+
+criteria: |
+  Verify Tailwind config has theme extension for shadcn CSS variables.
+  
+  ANTI-PATTERN:
+  - Using shadcn without extending theme with CSS variables
+  - Missing color definitions in tailwind.config
+  - Components don't inherit theme colors properly
+  
+  WHY IT'S WRONG:
+  - Tailwind doesn't recognize CSS variable-based colors
+  - Utilities like bg-background, text-foreground don't work
+  - Components may have inline styles but no utility support
+  
+  CORRECT:
+  - tailwind.config must extend theme.colors:
+    colors: {
+      background: "hsl(var(--background))",
+      foreground: "hsl(var(--foreground))",
+      primary: { DEFAULT: "hsl(var(--primary))", foreground: "hsl(var(--primary-foreground))" },
+      // etc.
+    }
+  - borderRadius with CSS variables
+  
+  EVALUATION:
+  - Check if shadcn components exist
+  - Verify tailwind.config extends theme with CSS variable colors
+  - Look for hsl(var(--background)) pattern in colors
+  - If components exist but theme not extended: score 0.0
+  - If no shadcn components: score -1.0 (N/A)
+  
+

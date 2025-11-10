@@ -1,0 +1,33 @@
+eval_id: vercel_seo_metadata
+name: "SEO and Metadata Configuration"
+description: "Verify proper SEO metadata and Open Graph tags for production deployment"
+category: vercel
+
+criteria: |
+  Evaluate the application's SEO and social sharing metadata. Use a balanced scoring approach where having most SEO elements is sufficient for a passing score.
+  
+  Check for these elements (award points for presence):
+  - Page titles using Metadata API or next/head [High priority]
+  - Meta descriptions for key pages [High priority]
+  - Open Graph tags (og:title, og:description, og:image) [Medium priority]
+  - Twitter Card tags for social sharing [Low priority]
+  - Canonical URLs to prevent duplicate content [Medium priority]
+  - Structured data (JSON-LD) [Low priority]
+  - Robots.txt and sitemap.xml generation [Medium priority]
+  - Alt text on images for accessibility [High priority]
+  
+  Mark as PASS if the app has MOST of the good stuff:
+  - Has at least 4-5 of the 8 elements above (simple majority)
+  - Shows clear SEO effort (titles and descriptions present)
+  - Missing a few low-priority items is acceptable
+  - The positives clearly outweigh any gaps
+  
+  Mark as FAIL only if severely lacking:
+  - Missing most high-priority items (no titles AND no descriptions)
+  - Has fewer than 3 total SEO elements
+  - Shows no SEO consideration whatsoever
+  
+  When in doubt, favor PASS if reasonable SEO effort is evident.
+
+inputs:
+  deployment_url: ""

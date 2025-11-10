@@ -1,0 +1,47 @@
+
+eval_id: supabase_client_setup
+name: "Supabase Client Setup and Configuration"
+description: "Check if agent properly set up the Supabase client with correct configuration"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Build an application with Supabase backend
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to build an application with Supabase backend.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **Package Installation**
+     - Has @supabase/supabase-js package installed in package.json
+  
+  2. **Client Configuration**
+     - Creates Supabase client using createClient()
+     - Client is properly exported for use
+     - Uses environment variables (e.g., NEXT_PUBLIC_SUPABASE_URL, VITE_SUPABASE_URL, SUPABASE_URL, etc.)
+     - No hardcoded credentials in source code
+  
+  3. **Connection Validation**
+     - Test the connection using provided credentials: URL={supabase_url}, Key={supabase_anon_key}
+     - Run a basic test query to verify the connection works
+  
+  Look at the repo and check for evidence like:
+  - package.json with @supabase/supabase-js dependency
+  - Supabase client file (lib/supabase.ts, utils/supabase.ts, config/supabase.ts, etc.)
+  - Proper use of environment variables
+  - Successful connection test
+  
+  SCORING:
+  - 1.0 (PASS): All criteria met - package installed, client configured correctly, env vars used, connection works
+  - 0.0 (FAIL): Supabase was ATTEMPTED (package installed OR client imports OR env vars present) but incorrectly configured (hardcoded credentials, missing env vars, broken connection, etc.)
+  - -1.0 (N/A): Supabase is NOT USED AT ALL in the codebase - no @supabase/supabase-js dependency, no imports, no configuration attempts. This is the correct score when the project uses a different backend (Firebase, MongoDB, Razorpay, etc.)
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+  env_file_path: ".env.local"

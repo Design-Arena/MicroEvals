@@ -1,0 +1,30 @@
+eval_id: nextjs_route_handlers_010
+name: "Route Handlers API Routes"
+description: "Validates proper Next.js App Router route handler implementation"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if API routes use correct Next.js App Router patterns.
+  
+  CONTEXT: This eval applies to Next.js App Router codebases with API routes.
+  
+  WHAT TO LOOK FOR:
+  Find route.ts/route.js files in the app/ directory (API routes).
+  
+  ANTI-PATTERN (mark as failed):
+  - route.ts file uses Pages Router API (export default function handler(req, res))
+  - Using Node.js req/res objects instead of Next.js Request/Response
+  - API route not named route.ts/route.js
+  - Missing Response.json() for JSON responses
+  
+  CORRECT PATTERN (mark as passed):
+  - Files named route.ts in app/api/[endpoint]/ structure
+  - Exports named functions: GET, POST, PUT, DELETE, etc.
+  - Uses Next.js Request/Response: new Response(), Response.json()
+  - Async functions when doing async operations
+  
+  SCORING:
+  - Score 1.0 (PASS): API routes use correct App Router patterns (route.ts files with named exports GET/POST/etc.), no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (Pages Router patterns in App Router, wrong file names, missing Response.json(), etc.)
+  - Score -1.0 (N/A): No API routes in codebase OR using Pages Router only OR no Next.js App Router
+

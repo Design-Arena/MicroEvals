@@ -1,0 +1,27 @@
+eval_id: nextjs_avoid_getserversideprops_023
+name: "Avoid Pages Router Patterns (getServerSideProps)"
+description: "Detects old Pages Router patterns like getServerSideProps in App Router apps"
+category: nextjs
+
+criteria: |
+  Detect old Pages Router patterns (getServerSideProps, getStaticProps, getInitialProps).
+  
+  OLD PATTERNS (Pages Router - deprecated in App Router):
+  - export function getServerSideProps
+  - export function getStaticProps
+  - export function getInitialProps
+  
+  WHY IT'S WRONG:
+  - These functions only work in Pages Router (pages/ directory)
+  - App Router uses server components and async functions instead
+  - Mixing routers causes confusion and errors
+  
+  CORRECT APPROACH (App Router):
+  - Use server components for data fetching
+  - Use async/await directly in components
+  - Use server actions for mutations
+  
+  SCORING:
+  - Score 1.0 (PASS): No Pages Router patterns found - using App Router correctly
+  - Score 0.0 (FAIL): Old Pages Router patterns detected (getServerSideProps, getStaticProps, getInitialProps)
+  - Score -1.0 (N/A): Using Pages Router exclusively (pages/ directory exists, app/ doesn't)

@@ -1,0 +1,31 @@
+eval_id: shadcn_client_directive_005
+name: "Use Client Directive for Interactive Components"
+description: "Checks if interactive shadcn components have 'use client' directive in Next.js App Router"
+category: shadcn
+
+criteria: |
+  Verify interactive shadcn components have 'use client' directive.
+  
+  ANTI-PATTERN:
+  - Using Form, Dialog, Popover, etc. in server components
+  - Missing 'use client' in component files
+  - Importing client components directly in server components
+  
+  WHY IT'S WRONG:
+  - Error: "You're importing a component that needs useState/useEffect"
+  - Interactive components require client-side rendering
+  - Hydration errors in Next.js App Router
+  
+  CORRECT:
+  - Interactive components need 'use client' at top of file
+  - Or wrap in a client component wrapper
+  - Components that need it: Form, Dialog, Popover, DropdownMenu, Sheet, etc.
+  
+  EVALUATION:
+  - Check if using Next.js App Router (app directory)
+  - Detect shadcn interactive components (form, dialog, dropdown, etc.)
+  - Verify these components or their wrappers have 'use client'
+  - If interactive components without 'use client': score 0.0
+  - If no App Router or no interactive components: score -1.0 (N/A)
+  
+

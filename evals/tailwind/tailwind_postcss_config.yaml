@@ -1,0 +1,24 @@
+eval_id: nextjs_tailwind_postcss_config
+name: "Tailwind CSS PostCSS Configuration"
+description: "Verify the agent correctly diagnoses and fixes missing PostCSS configuration for Tailwind CSS"
+category: tailwind
+
+criteria: |
+  Check Tailwind CSS v3 PostCSS configuration (traditional setup).
+  
+  IMPORTANT: This eval checks for Tailwind CSS v3 configuration ONLY.
+  If the project uses Tailwind v4 (indicated by @import "tailwindcss" or @tailwindcss/postcss),
+  score -1.0 (N/A) since v4 has different requirements.
+  
+  REQUIREMENTS FOR V3:
+  1. postcss.config.js/mjs exists
+  2. Contains "tailwindcss" plugin (not @tailwindcss/postcss)
+  3. Contains autoprefixer plugin
+  4. tailwind.config.js exists with content paths
+  5. globals.css has @tailwind directives (not @import)
+  
+  SCORING:
+  - If using Tailwind v4 syntax (@import "tailwindcss" OR @tailwindcss/postcss): score -1.0 (N/A)
+  - If no Tailwind at all: score -1.0 (N/A)
+  - If all v3 requirements met: score 1.0 (PASS)
+  - If v3 config incomplete/incorrect: score 0.0 (FAIL)

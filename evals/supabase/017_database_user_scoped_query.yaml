@@ -1,0 +1,52 @@
+
+eval_id: supabase_database_user_scoped_query
+name: "Supabase User-Scoped Data Query"
+description: "Check if agent implements queries filtered by current authenticated user"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Fetch all records for the current user
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to fetch records that belong to the current authenticated user.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **User Authentication Check**
+     - Gets current user from supabase.auth.getUser() or similar
+     - Checks if user is authenticated before querying
+     - Handles unauthenticated state appropriately
+  
+  2. **User-Scoped Query**
+     - Query filters by user_id or auth.uid()
+     - Uses .eq('user_id', user.id) or similar filter
+     - OR uses RLS policies that automatically filter by user
+     - Does NOT fetch all records without user filtering
+  
+  3. **Proper Query Structure**
+     - Uses .from().select().eq() pattern or similar
+     - Filters data to only show current user's records
+     - Could be in server component, server action, or API route
+  
+  Look at the repo and check for evidence like:
+  - supabase.auth.getUser() to get current user
+  - .eq('user_id', user.id) or similar filtering
+  - Query that respects user ownership
+  - RLS policies enabled (optional but good practice)
+  - Not fetching unfiltered data
+  
+  SCORING:
+  - 1.0 (PASS): Query exists AND filters by current user (either via .eq('user_id', user.id) in code or via RLS policies)
+  - 0.0 (FAIL): Missing query OR no user filtering OR fetches all data without user scope (SECURITY ISSUE)
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js OR uses different database) OR no user-scoped queries exist
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_anon_key: "SUPABASE_ANON_KEY"
+
+

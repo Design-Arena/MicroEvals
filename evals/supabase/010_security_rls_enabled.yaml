@@ -1,0 +1,42 @@
+
+eval_id: supabase_security_rls_enabled
+name: "Supabase RLS Enabled on Tables"
+description: "Check if Row Level Security is enabled on database tables"
+category: supabase
+
+# What was the agent asked to do?
+task_description: |
+  Make sure the database and Supabase are secure
+
+# How to evaluate success?
+criteria: |
+  The agent was asked to make sure the database and Supabase are secure.
+
+  DO NOT MODIFY ANY FILES. Only read and evaluate the existing code.
+  
+  Evaluate if they completed the task successfully by checking:
+  
+  1. **RLS Enabled on Public Tables**
+     - Query Supabase to check RLS status on all public tables
+     - Use admin credentials: URL={supabase_url}, Key={supabase_admin_key}
+     - Run SQL: SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public'
+  
+  2. **All Data Tables Have RLS**
+     - Verify that all tables (excluding system tables) have rowsecurity = true
+     - Tables without RLS are a critical security vulnerability
+  
+  Look at the repo and check for evidence like:
+  - Database tables have RLS enabled
+  - No public tables accessible without RLS
+  - SQL queries or migrations that enable RLS (ALTER TABLE ... ENABLE ROW LEVEL SECURITY)
+  
+  SCORING:
+  - 1.0 (PASS): RLS is enabled on ALL public data tables (rowsecurity = true for all tables)
+  - 0.0 (FAIL): Any public data table missing RLS OR security vulnerability found (tables without RLS)
+  - -1.0 (N/A): Supabase is NOT USED (no @supabase/supabase-js OR uses different database like MongoDB, Prisma+PostgreSQL, Firebase) OR cannot connect to verify RLS status
+
+# Optional: Custom inputs for this specific eval
+inputs:  
+  supabase_url: "SUPABASE_URL"
+  supabase_admin_key: "SUPABASE_ADMIN_KEY"
+

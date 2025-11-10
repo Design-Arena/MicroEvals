@@ -1,0 +1,28 @@
+eval_id: nextjs_server_component_001
+name: "Server Component Data Fetching"
+description: "Validates proper async server component implementation for data fetching"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if server components properly fetch data.
+  
+  CONTEXT: This eval applies to Next.js App Router codebases with data fetching.
+  
+  WHAT TO LOOK FOR:
+  Look for page components (page.tsx/jsx files) or server components that fetch data.
+  
+  ANTI-PATTERN (mark as failed):
+  - Server component uses 'use client' directive just to use useState/useEffect for data fetching
+  - Async function fetch but missing 'await' on fetch() or response.json()
+  - Component should be async but isn't declared as async
+  
+  CORRECT PATTERN (mark as passed):
+  - Page/server component is async function
+  - Uses 'await fetch()' and 'await response.json()' 
+  - No 'use client' directive for data fetching components
+  
+  SCORING:
+  - Score 1.0 (PASS): Server components properly fetch data with async/await, no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (using 'use client' for data fetching, missing await, non-async)
+  - Score -1.0 (N/A): No Next.js App Router OR no server components doing data fetching
+

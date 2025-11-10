@@ -1,0 +1,28 @@
+eval_id: nextjs_server_actions_cookies_003
+name: "Server Actions Cookie Management"
+description: "Validates server actions properly handle cookies using Next.js APIs"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Evaluate if cookie management uses the correct APIs.
+  
+  CONTEXT: This eval applies to Next.js App Router codebases that set/read cookies.
+  
+  WHAT TO LOOK FOR:
+  Find any code that sets or reads cookies. Check where and how cookies are used.
+  
+  ANTI-PATTERN (mark as failed):
+  - Server actions or server components use document.cookie (browser API)
+  - Setting cookies without importing cookies() from 'next/headers'
+  - Using cookies() in client components (has 'use client')
+  
+  CORRECT PATTERN (mark as passed):
+  - Server actions use 'use server' and cookies() from 'next/headers'
+  - Server components import { cookies } from 'next/headers'
+  - Client-side uses fetch/server actions to set cookies server-side
+  
+  SCORING:
+  - Score 1.0 (PASS): Cookie management uses correct Next.js APIs (cookies() from 'next/headers'), no anti-patterns found
+  - Score 0.0 (FAIL): Anti-patterns found (using document.cookie in server context, cookies() in client components, etc.)
+  - Score -1.0 (N/A): No Next.js App Router OR no cookie management in codebase OR using Pages Router only
+

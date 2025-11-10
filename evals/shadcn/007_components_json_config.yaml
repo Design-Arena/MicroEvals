@@ -1,0 +1,35 @@
+eval_id: shadcn_components_json_config_007
+name: "Valid components.json Configuration"
+description: "Checks if components.json exists and is properly configured for shadcn CLI"
+category: shadcn
+
+criteria: |
+  Verify components.json is properly configured for shadcn CLI.
+  
+  ANTI-PATTERN:
+  - Missing components.json file
+  - Incorrect paths that don't match project structure
+  - Wrong alias configuration
+  - Style/baseColor mismatch with actual setup
+  
+  WHY IT'S WRONG:
+  - shadcn CLI fails: "components.json not found"
+  - Components installed to wrong directory
+  - Import paths don't match actual paths
+  - Can't add new components with CLI
+  
+  CORRECT:
+  - components.json at project root
+  - Correct aliases: { "components": "@/components", "utils": "@/lib/utils" }
+  - Valid paths matching tsconfig
+  - Style should match (default/new-york)
+  - tailwind config paths correct
+  
+  EVALUATION:
+  - Check if shadcn components exist
+  - Verify components.json exists and is valid JSON
+  - Check if paths/aliases match actual project structure
+  - If components exist but config wrong: score 0.0
+  - If no shadcn components: score -1.0 (N/A)
+  
+

@@ -1,0 +1,32 @@
+eval_id: react_async_useeffect_004
+name: "Async Function in useEffect Without Wrapper"
+description: "Checks for async functions directly in useEffect (not allowed)"
+category: react
+
+criteria: |
+  Detect async functions used directly as useEffect callback.
+  
+  ANTI-PATTERN:
+  - useEffect(async () => { await fetch() }, [])
+  - Using async directly as useEffect callback
+  
+  WHY IT'S WRONG:
+  - useEffect expects function that returns void or cleanup function
+  - async functions always return Promise
+  - React warning: "Effect callbacks are synchronous"
+  - Can cause bugs with cleanup
+  
+  CORRECT:
+  - useEffect(() => { 
+      async function fetchData() { await fetch() }
+      fetchData()
+    }, [])
+  - Or: useEffect(() => { 
+      (async () => { await fetch() })()
+    }, [])
+  
+  SCORING:
+  - Score 1.0 (PASS): useEffect hooks exist AND none use async directly as callback (all properly wrapped)
+  - Score 0.0 (FAIL): useEffect hooks exist BUT async used directly as callback (list specific locations)
+  - Score -1.0 (N/A): No useEffect hooks found in codebase
+

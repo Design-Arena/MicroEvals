@@ -1,0 +1,32 @@
+eval_id: shadcn_path_aliases_004
+name: "Correct Path Aliases Configuration"
+description: "Checks if path aliases (@/components) are properly configured for shadcn imports"
+category: shadcn
+
+criteria: |
+  Verify path aliases are configured correctly for shadcn component imports.
+  
+  ANTI-PATTERN:
+  - Components import from '@/components/ui/button'
+  - But tsconfig.json has no @ alias configured
+  - Or alias points to wrong directory
+  
+  WHY IT'S WRONG:
+  - Module not found error: "Cannot find module '@/components/ui/button'"
+  - Imports fail at build time
+  - Shadcn CLI generates imports with @ alias by default
+  
+  CORRECT:
+  - tsconfig.json (or jsconfig.json) must have:
+    "paths": { "@/*": ["./*"] } or "@/*": ["./src/*"]
+  - Must match components.json aliases configuration
+  - baseUrl must be set (usually ".")
+  
+  EVALUATION:
+  - Check if shadcn components exist with @ imports
+  - Verify tsconfig.json/jsconfig.json has @ alias configured
+  - Check if path matches actual component location
+  - If imports use @ but not configured: score 0.0
+  - If no shadcn components: score -1.0 (N/A)
+  
+

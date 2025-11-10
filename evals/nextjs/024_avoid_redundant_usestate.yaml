@@ -1,0 +1,29 @@
+eval_id: nextjs_avoid_redundant_usestate_024
+name: "Avoid Redundant useState"
+description: "Checks for unnecessary useState for derived values that can be computed directly"
+category: nextjs
+
+criteria: |
+  Detect useState storing derived values that could be computed directly.
+  
+  ANTI-PATTERN:
+  - useState for values completely derived from other state
+  - useEffect updating state based on other state changes
+  - Example: `const [showResult, setShowResult] = useState(false)` that mirrors `selected !== null`
+  - Example: total price from items array (should compute, not store)
+  
+  WHY IT'S WRONG:
+  - Unnecessary complexity and state management overhead
+  - Can lead to synchronization bugs if derived state gets out of sync
+  - Extra re-renders when both states update
+  - Harder to maintain and understand
+  
+  CORRECT APPROACH:
+  - Compute derived values directly: `const showResult = selected !== null`
+  - Use useMemo for expensive computations
+  - Keep state minimal and derive everything else
+  
+  SCORING:
+  - Score 1.0 (PASS): No redundant useState found - all state is minimal and necessary
+  - Score 0.0 (FAIL): Redundant useState detected - state storing derived values
+  - Score -1.0 (N/A): No React/Next.js code found in project

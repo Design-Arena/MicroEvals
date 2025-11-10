@@ -1,0 +1,29 @@
+eval_id: nextjs_prefer_server_actions_022
+name: "Prefer Server Actions Over API Routes"
+description: "Checks if forms use server actions instead of client-side fetch to API routes"
+category: nextjs
+
+criteria: |
+  Check if forms use server actions instead of client-side fetch to API routes.
+  
+  ANTI-PATTERN:
+  - Forms with onSubmit + fetch/axios calls to API routes
+  - Creating API routes just for simple form mutations
+  - Client-side data fetching for form submissions
+  
+  BEST PRACTICE (Next.js 13+ App Router):
+  - Forms with action={serverAction} prop
+  - 'use server' directive in server action functions
+  - Direct FormData usage in server actions
+  - No intermediate API route needed
+  
+  WHY IT'S BETTER:
+  - Simpler code - no API route + fetch boilerplate
+  - Better performance - direct server execution
+  - Type safety - server actions are type-safe
+  - Progressive enhancement - works without JavaScript
+  
+  SCORING:
+  - Score 1.0 (PASS): Forms use server actions (or no forms exist but should score 1.0 if using App Router best practices)
+  - Score 0.0 (FAIL): Forms use old pattern (onSubmit + fetch to API routes)
+  - Score -1.0 (N/A): No forms found, or using Pages Router (where API routes are appropriate)

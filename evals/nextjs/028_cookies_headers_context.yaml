@@ -1,0 +1,29 @@
+eval_id: nextjs_cookies_headers_context_028
+name: "Cookies/Headers Only in Server Context"
+description: "Catches cookies() or headers() used in client components - causes runtime error"
+category: nextjs
+
+criteria: |
+  You have access to the entire codebase. Look for cookies() or headers() in wrong contexts.
+  
+  CONTEXT: This catches a mistake that causes runtime errors.
+  
+  WHAT TO LOOK FOR:
+  Find imports of cookies or headers from 'next/headers' and check where they're used.
+  
+  ANTI-PATTERN (mark as failed - THIS IS A BUG):
+  - File has 'use client' directive AND uses cookies() or headers()
+  - Error: "cookies() only works in Server Components"
+  - These APIs only work in server components, server actions, and route handlers
+  
+  CORRECT PATTERN (mark as passed):
+  - cookies() and headers() only used in files WITHOUT 'use client'
+  - Used in server components, server actions (use server), or route.ts files
+  
+  SCORING:
+  - Score 1.0 (PASS): cookies() and headers() only used in server context (no 'use client'), no anti-patterns found
+  - Score 0.0 (FAIL): Anti-pattern found - cookies() or headers() used in client components with 'use client' (THIS IS A BUG)
+  - Score -1.0 (N/A): No usage of cookies() or headers() from 'next/headers' OR no Next.js App Router
+  
+  NOTE: If you need cookies in client component, pass them as props from server component.
+

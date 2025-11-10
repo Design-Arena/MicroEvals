@@ -1,0 +1,30 @@
+eval_id: react_direct_state_mutation_005
+name: "No Direct State Mutation"
+description: "Checks for direct mutation of state instead of using setState"
+category: react
+
+criteria: |
+  Detect direct mutation of React state (arrays, objects).
+  
+  ANTI-PATTERN:
+  - const [items, setItems] = useState([]); items.push(newItem)
+  - const [user, setUser] = useState({}); user.name = 'John'
+  - state.array[0] = newValue
+  - Mutating state directly without setState
+  
+  WHY IT'S WRONG:
+  - React doesn't detect the change
+  - Component doesn't re-render
+  - Breaks React's state management
+  - Violates immutability principle
+  
+  CORRECT:
+  - setItems([...items, newItem]) // spread operator
+  - setItems(prev => [...prev, newItem]) // functional update
+  - setUser({...user, name: 'John'}) // spread for objects
+  
+  SCORING:
+  - Score 1.0 (PASS): State variables exist AND none are mutated directly (all use immutable updates)
+  - Score 0.0 (FAIL): State variables exist BUT direct mutations found (list specific locations)
+  - Score -1.0 (N/A): No state variables found in codebase
+

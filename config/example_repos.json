@@ -1,0 +1,18 @@
+[
+  {
+    "repo": "git@github.com:Design-Arena-Gens/agentic-03c9e7a0.git",
+    "prompt": "create a roblox game",
+    "name": "roblox-game-1"
+  },
+  {
+    "repo": "git@github.com:Design-Arena-Gens/agentic-2a826654.git", 
+    "prompt": "Build a Next.js blog with authentication and dark mode",
+    "name": "nextjs-blog"
+  },
+  {
+    "repo": "git@github.com:Design-Arena-Gens/agentic-2718b040.git", 
+    "prompt": "Make me an agent that reads my emails and summarized them to me",
+    "name": "todo-app"
+  }
+]
+
