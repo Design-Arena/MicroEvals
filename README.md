@@ -1,12 +1,20 @@
+<div align="center">
+  <img src="https://www.designarena.ai/DesignArenaAssets/DesignArenaTitleLogo.svg" alt="Design Arena" width="200" />
+</div>
+
 # MicroEvals
 
-**Automated evaluation framework for AI-generated code quality and best practices.**
+**Battle-tested evaluations for AI-generated code, born from 300,000+ developers building in production on Design Arena.**
 
-MicroEvals is a collection of focused, automated tests that evaluate whether AI-generated code (or any codebase) follows framework-specific best practices and avoids common anti-patterns. Each evaluation uses Claude to analyze your codebase against specific criteria.
+MicroEvals is a collection of focused, automated tests that evaluate whether AI-generated code (or any codebase) follows framework-specific best practices and avoids common anti-patterns. Each evaluation uses Claude Code to analyze your codebase against specific criteria.
 
 ## What Are MicroEvals?
 
-MicroEvals are **micro-evaluations** - small, focused tests that check for specific patterns or anti-patterns in your code. Unlike traditional linters that check syntax, MicroEvals use LLM as a judge to understand context and evaluate architectural decisions.
+Born from observing over 300,000 developers building on [Design Arena](https://designarena.ai), MicroEvals are **micro-evaluations** grounded in real-world agent failures—not synthetic or contrived benchmarks. Each eval targets authentic failure modes that agents encounter in production.
+
+Unlike traditional linters that check syntax, MicroEvals use Claude Code as an LLM judge to understand context and evaluate architectural decisions. Each evaluation is carefully selected for being both **common enough to surface in real-world use cases** and **difficult enough to provide discriminating signal**.
+
+**Learn more about the methodology:** [Introducing Micro Evals](https://notes.designarena.ai/introducing-micro-evals/)
 
 **Example Use Cases:**
 - Verify Next.js App Router best practices (server components, data fetching)
@@ -78,6 +86,8 @@ microeval --repo https://github.com/user/app --category nextjs
 ```
 
 ## Available Eval Categories
+
+Built on foundations like Vercel's [next-evals-oss](https://github.com/vercel/next-evals-oss), refined for real-world agent development. Each evaluation produces a binary pass/fail outcome with detailed breakdowns.
 
 | Category | Count | Description |
 |----------|-------|-------------|
