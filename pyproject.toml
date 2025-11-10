@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "microevals"
+version = "0.1.0"
+description = "Automated evaluation framework for AI-generated code quality"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Design Arena", email = "contact@designarena.ai"},
+    {name = "Kamryn Ohly", email = "kamryn@arcada.dev"}
+]
+keywords = ["evaluation", "agents", "ai", "evals", "design", "benchmarks"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "requests>=2.31.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Design-Arena/MicroEvals"
+Repository = "https://github.com/Design-Arena/MicroEvals"
+Documentation = "https://github.com/Design-Arena/MicroEvals#readme"
+Issues = "https://github.com/Design-Arena/MicroEvals/issues"
+
+[project.scripts]
+microeval = "microevals.eval_runner:main"
+
+[tool.setuptools]
+packages = ["microevals"]
+
+[tool.setuptools.package-data]
+microevals = ["../evals/**/*.yaml", "../evals/**/*.yml", "../config/*.yaml"]
+

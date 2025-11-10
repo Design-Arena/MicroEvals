@@ -10,21 +10,25 @@ from .eval_registry import EvalRegistry
 from .utils import (
     load_source,
     clone_repo,
+    prepare_repo,
     build_prompt,
     run_eval,
     run_batch_eval,
     read_result,
-    save_results
+    save_results,
+    safe_cleanup_temp_dir
 )
 
 __all__ = [
     'EvalRegistry',
     'load_source',
     'clone_repo',
+    'prepare_repo',
     'build_prompt',
     'run_eval',
     'run_batch_eval',
     'read_result',
-    'save_results'
+    'save_results',
+    'safe_cleanup_temp_dir'
 ]
 

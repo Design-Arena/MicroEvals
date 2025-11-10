@@ -18,6 +18,25 @@ MicroEvals are **micro-evaluations** - small, focused tests that check for speci
 
 ## Quick Start
 
+### Installation
+
+#### Option 1: Install from PyPI (Recommended)
+
+```bash
+pip install microevals
+```
+
+#### Option 2: Install from Source (For Development)
+
+```bash
+# Clone the repository
+git clone https://github.com/Design-Arena/MicroEvals
+cd MicroEvals
+
+# Install in development mode
+pip install -e .
+```
+
 ### Prerequisites
 
 1. **Python 3.8+** installed
@@ -28,31 +47,34 @@ MicroEvals are **micro-evaluations** - small, focused tests that check for speci
    
    # Verify installation
    claude --version
+   
+   # If command not found, add Claude to your PATH:
+   export PATH="$PATH:/path/to/claude"
+   # Add the export line to your ~/.bashrc or ~/.zshrc to make it permanent
    ```
 
-3. **Git** installed
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/Design-Arena/MicroEvals
-cd MicroEvals
-
-# Install Python dependencies
-pip install -r requirements.txt
-```
+3. **Git** installed (for remote repositories)
 
 ### Run Your First Eval
 
 ```bash
-# Run a single eval against a GitHub repository
-python -m microevals.eval_runner \
-  --repo git@github.com:Design-Arena-Gens/agentic-03c9e7a0.git \
-  --eval evals/nextjs/001-server-component.yaml
+# Navigate to your project
+cd your-nextjs-app
+
+# Run evaluations on current directory
+microeval --category nextjs
 
 # Check the results
 cat results/*.json
+```
+
+**🔒 Safety Note:** When running on local directories, your code is **copied** to a temporary directory before evaluation. Your original files are **never modified or deleted**. The framework has 6 independent safety checks to prevent accidental file deletion.
+
+### Alternative: Run Against Remote Repository
+
+```bash
+# Run against a GitHub repository
+microeval --repo https://github.com/user/app --category nextjs
 ```
 
 ## Available Eval Categories
@@ -69,39 +91,66 @@ cat results/*.json
 
 **See all available evals:**
 ```bash
+# List all evals (recommended)
+microeval --list
+
+# List evals in a specific category
+microeval --list --category nextjs
+
+# Or using Python module
 python -m microevals.eval_registry --list
 ```
 
 ## Running Evals
 
-### Single Eval
+### Local Directory (Recommended)
 
-Run one specific evaluation:
+Run evaluations on your current project:
 
 ```bash
-python -m microevals.eval_runner \
-  --repo https://github.com/user/app \
-  --eval evals/nextjs/001-server-component.yaml
+# Using the microeval command (recommended)
+microeval --category nextjs
+
+# Or using Python module directly
+python -m microevals.eval_runner --category nextjs
 ```
 
-### Eval Category
-
-Run all evals in a category:
+**More examples:**
 
 ```bash
-python -m microevals.eval_runner \
-  --repo https://github.com/user/app \
-  --category nextjs
+# Run a specific eval
+microeval --eval evals/nextjs/001-server-component.yaml
+
+# Run all evals
+microeval --all
+
+# Run with batch mode for speed
+microeval --category nextjs --batch-size 10
 ```
 
-### All Evals
+### Remote Repository
 
-Run every evaluation:
+Run evaluations against a GitHub repository:
 
 ```bash
-python -m microevals.eval_runner \
-  --repo https://github.com/user/app \
-  --all
+# Using the microeval command
+microeval --repo https://github.com/user/app --category nextjs
+
+# Or using Python module directly
+python -m microevals.eval_runner --repo https://github.com/user/app --category nextjs
+```
+
+**More examples:**
+
+```bash
+# Run specific eval
+microeval --repo https://github.com/user/app --eval evals/nextjs/001-server-component.yaml
+
+# Run all evals
+microeval --repo https://github.com/user/app --all
+
+# Run with batch mode
+microeval --repo https://github.com/user/app --all --batch-size 15
 ```
 
 ### Specific Eval IDs
@@ -109,6 +158,10 @@ python -m microevals.eval_runner \
 Run evaluations by their IDs:
 
 ```bash
+# Using microeval command
+microeval --ids nextjs_server_component_001 react_missing_useeffect_dependencies_001
+
+# Or using Python module
 python -m microevals.eval_runner \
   --repo https://github.com/user/app \
   --ids nextjs_server_component_001 react_missing_useeffect_dependencies_001
@@ -119,6 +172,10 @@ python -m microevals.eval_runner \
 Run multiple specific eval files:
 
 ```bash
+# Using microeval command
+microeval --evals evals/nextjs/001-server-component.yaml evals/react/001_missing_useeffect_dependencies.yaml
+
+# Or using Python module
 python -m microevals.eval_runner \
   --repo https://github.com/user/app \
   --evals evals/nextjs/001-server-component.yaml evals/react/001_missing_useeffect_dependencies.yaml
@@ -131,6 +188,12 @@ python -m microevals.eval_runner \
 Override default values from eval YAML files:
 
 ```bash
+# Using microeval command
+microeval --eval evals/supabase/001_client_setup.yaml \
+  --input supabase_url "https://xyz.supabase.co" \
+  --input supabase_anon_key "your_key_here"
+
+# Or using Python module
 python -m microevals.eval_runner \
   --repo https://github.com/user/app \
   --eval evals/supabase/001_client_setup.yaml \
@@ -143,6 +206,10 @@ python -m microevals.eval_runner \
 Run multiple evals in parallel (faster but uses more resources):
 
 ```bash
+# Using microeval command
+microeval --category nextjs --parallel 3
+
+# Or using Python module
 python -m microevals.eval_runner \
   --repo https://github.com/user/app \
   --category nextjs \
@@ -154,17 +221,17 @@ python -m microevals.eval_runner \
 Run multiple evals in a single Claude session (most efficient):
 
 ```bash
-# Run 5 evals per Claude session
+# Using microeval command - Run 5 evals per Claude session
+microeval --category tailwind --batch-size 5
+
+# Run all evals in large batches
+microeval --all --batch-size 15
+
+# Or using Python module
 python -m microevals.eval_runner \
   --repo https://github.com/user/app \
   --category tailwind \
   --batch-size 5
-
-# Run all evals in large batches
-python -m microevals.eval_runner \
-  --repo https://github.com/user/app \
-  --all \
-  --batch-size 15
 ```
 
 **Batch mode benefits:**
@@ -175,6 +242,9 @@ python -m microevals.eval_runner \
 **Preview batch prompt before running:**
 
 ```bash
+microeval --category tailwind --batch-size 3 --print-prompt
+
+# Or using Python module
 python -m microevals.eval_runner \
   --repo https://github.com/user/app \
   --category tailwind \
@@ -187,6 +257,10 @@ python -m microevals.eval_runner \
 Increase timeout for slower evaluations:
 
 ```bash
+# Using microeval command
+microeval --eval evals/nextjs/030_app_router_migration.yaml --timeout 600
+
+# Or using Python module
 python -m microevals.eval_runner \
   --repo https://github.com/user/app \
   --eval evals/nextjs/030_app_router_migration.yaml \
@@ -198,6 +272,10 @@ python -m microevals.eval_runner \
 Save results to a specific directory:
 
 ```bash
+# Using microeval command
+microeval --category nextjs --output-dir my_results
+
+# Or using Python module
 python -m microevals.eval_runner \
   --repo https://github.com/user/app \
   --category nextjs \

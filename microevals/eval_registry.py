@@ -8,12 +8,26 @@ including its category, dependencies, and applicability conditions.
 from pathlib import Path
 from typing import List, Dict, Any
 import yaml
+import sys
 
 
 class EvalRegistry:
     """Registry of all available evaluations."""
     
-    def __init__(self, evals_dir: str = "evals"):
+    def __init__(self, evals_dir: str = None):
+        if evals_dir is None:
+            # Try to find evals relative to package installation
+            try:
+                # Use importlib.resources for Python 3.9+ or fall back to __file__
+                if sys.version_info >= (3, 9):
+                    from importlib.resources import files
+                    evals_dir = str(files('microevals').parent / 'evals')
+                else:
+                    # Fallback for older Python versions
+                    evals_dir = str(Path(__file__).parent.parent / 'evals')
+            except:
+                # Final fallback - look relative to this file
+                evals_dir = str(Path(__file__).parent.parent / 'evals')
         self.evals_dir = Path(evals_dir)
         self.evals = self._discover_evals()
     
